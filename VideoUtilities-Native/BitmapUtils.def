@@ -1,0 +1,11 @@
+LIBRARY
+
+EXPORTS
+    ; Explicit exports can go here
+
+	GetBitmapPixels
+	GetColourBitmapPixels
+	GetRGGBBayerBitmapPixels
+	GetMonochromePixelsFromBitmap
+	GetColourPixelsFromBitmap
+	GetRGGBBayerPixelsFromBitmap

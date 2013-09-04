@@ -1,0 +1,67 @@
+﻿//tabs=4
+// --------------------------------------------------------------------------------
+//
+// ASCOM Video Driver - Video Client
+//
+// Description:	A managed wrapper to call unmanaged methods used by the Video Client
+//
+// Author:		(HDP) Hristo Pavlov <hristo_dpavlov@yahoo.com>
+//
+// --------------------------------------------------------------------------------
+//
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using ASCOM.DeviceInterface;
+
+namespace Client
+{
+	public static class NativeHelpers
+	{
+		private const string VIDEOCLIENT_UTILS_DLL_NAME = "ASCOM.VideoClient.Native.dll";
+
+		[DllImport(VIDEOCLIENT_UTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+		private static extern int GetBitmapPixels(
+			int width, 
+			int height, 
+			int bpp,
+			[In, MarshalAs(UnmanagedType.LPArray)] int[,] pixels,
+			[In, Out] byte[] bitmapBytes, 
+			[In, Out] byte[] bitmapDisplayBytes);
+
+		public static Bitmap PrepareBitmapForDisplay(IVideoFrame videoFrame, int width, int height, bool useVariantPixels)
+		{
+			Bitmap displayBitmap = null;
+
+			int[,] pixels = new int[height, width];
+
+			if (useVariantPixels)
+			{
+				Array safeArr = (Array)videoFrame.ImageArrayVariant;
+				Array.Copy(safeArr, pixels, pixels.Length);
+			}
+			else
+			{
+				Array safeArr = (Array)videoFrame.ImageArray;
+				Array.Copy(safeArr, pixels, pixels.Length);
+			}
+
+			byte[] displayBitmapBytes = new byte[width * height];
+			byte[] rawBitmapBytes = new byte[(width * height * 3) + 40 + 14 + 1];
+
+			GetBitmapPixels(width, height, (int)8, pixels, rawBitmapBytes, displayBitmapBytes);
+
+			using (MemoryStream memStr = new MemoryStream(rawBitmapBytes))
+			{
+				displayBitmap = (Bitmap)Image.FromStream(memStr);
+			}
+
+			return displayBitmap;
+		}
+	}
+}

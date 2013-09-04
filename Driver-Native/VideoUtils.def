@@ -1,0 +1,16 @@
+LIBRARY
+
+EXPORTS
+    ; Explicit exports can go here
+	
+	SetGamma
+	ApplyGammaBrightness
+	InitFrameIntegration
+	AddFrameForIntegration
+	GetResultingIntegratedFrame
+	CreateNewAviFile
+	GetLastAviFileError
+	AviFileAddFrame
+	AviFileClose
+	GetUsedAviCompression
+	SetWhiteBalance

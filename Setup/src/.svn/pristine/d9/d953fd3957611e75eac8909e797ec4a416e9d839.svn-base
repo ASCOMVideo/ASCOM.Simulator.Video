@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<configSections>
+  <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+   <section name="Client.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+  </sectionGroup>
+ </configSections>
+ <system.diagnostics>
+		<!-- Possible values for the switches (not all may be actually used): 
+			 Trace Switches:  Off, Error, Warning, Info, Verbose 
+			 Boolean Switches: Disabled = 0, Enabled = 1 -->
+		<switches>
+			<add name="DebugTracing" value="Verbose"/>
+		</switches>
+	</system.diagnostics>
+ <userSettings>
+  <Client.Properties.Settings>
+   <setting name="UseNativeCode" serializeAs="String">
+    <value>True</value>
+   </setting>
+   <setting name="OutputLocation" serializeAs="String">
+    <value />
+   </setting>
+   <setting name="FreeRangeGainIntervals" serializeAs="String">
+    <value>16</value>
+   </setting>
+   <setting name="VariantPixels" serializeAs="String">
+    <value>False</value>
+   </setting>
+  </Client.Properties.Settings>
+ </userSettings>
+</configuration>
