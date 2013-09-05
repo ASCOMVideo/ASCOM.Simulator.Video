@@ -86,33 +86,25 @@
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.Astrometry.dll</HintPath>
-    </Reference>
     <Reference Include="ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.Attributes.dll</HintPath>
-    </Reference>
-    <Reference Include="ASCOM.Controls, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.Controls.dll</HintPath>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\ASCOM.Attributes\6.0.0.0__565de7938946fba7\ASCOM.Attributes.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.DeviceInterfaces.dll</HintPath>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\ASCOM.DeviceInterfaces\6.0.0.0__565de7938946fba7\ASCOM.DeviceInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.Exceptions.dll</HintPath>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\ASCOM.Exceptions\6.0.0.0__565de7938946fba7\ASCOM.Exceptions.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.SettingsProvider, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.SettingsProvider.dll</HintPath>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\ASCOM.SettingsProvider\6.0.0.0__565de7938946fba7\ASCOM.SettingsProvider.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ASCOM-Platform-6.0SP1\ASCOM.Utilities.dll</HintPath>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\ASCOM.Utilities\6.0.0.0__565de7938946fba7\ASCOM.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

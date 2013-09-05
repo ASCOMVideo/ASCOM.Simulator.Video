@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOM.Provisional.Video", "PreliminaryInterface\ASCOM.Provisional.Video.csproj", "{BFE1347B-F61D-411B-B977-8651E6A5095A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOM.Simulator.Video", "Driver\ASCOM.Simulator.Video.csproj", "{590966EA-FB61-4711-ADE7-424BCAD72C36}"

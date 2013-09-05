@@ -1,0 +1,5 @@
+1) You will need Visual Studio 2012 with both C++ and C# compilers installed
+
+2) Download the ASCOM Platform 6 SP2 from the ASCOM web site and install it on your DEV machine: http://download.ascom-standards.org/ASCOMPlatform6SP2.exe
+
+3) If you want to compile the documentation you will also need to download and install the Sandcastle Help File Builder (SHFB) - http://shfb.codeplex.com/
