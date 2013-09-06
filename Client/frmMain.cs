@@ -26,8 +26,8 @@ using System.Threading;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
+using ASCOM.Utilities.Video;
 using Client.Properties;
-using Koyash.VideoUtilities;
 
 namespace Client
 {

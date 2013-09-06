@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using ASCOM.DeviceInterface;
 
-namespace Koyash.VideoUtilities
+namespace ASCOM.Utilities.Video
 {
     [Guid("BD925113-3B58-4C5F-984E-FBCE7C6A93BE")]
     [ComVisible(true)]

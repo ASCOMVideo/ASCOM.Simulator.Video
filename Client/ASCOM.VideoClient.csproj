@@ -167,10 +167,6 @@
       <Project>{BFE1347B-F61D-411B-B977-8651E6A5095A}</Project>
       <Name>ASCOM.Provisional.Video</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VideoUtilities\Koyash.VideoUtilities.csproj">
-      <Project>{B2E2288D-D9C2-4B6B-985C-F0569809E4D0}</Project>
-      <Name>Koyash.VideoUtilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ASCOM.ico" />
@@ -199,7 +195,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)VideoUtilities\bin\$(ConfigurationName)\Koyash.VideoUtilities.Native.dll" "$(TargetDir)" /Y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

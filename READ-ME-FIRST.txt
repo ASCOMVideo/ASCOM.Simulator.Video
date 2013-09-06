@@ -1,5 +1,15 @@
-1) You will need Visual Studio 2012 with both C++ and C# compilers installed
+1) You will need Visual Studio 2012 with both C++ and C# compilers installed (it's free)
 
-2) Download the ASCOM Platform 6 SP2 from the ASCOM web site and install it on your DEV machine: http://download.ascom-standards.org/ASCOMPlatform6SP2.exe
+http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-for-windows-desktop#product-express-desktop
 
-3) If you want to compile the documentation you will also need to download and install the Sandcastle Help File Builder (SHFB) - http://shfb.codeplex.com/
+The build process will register some COM components which requires write Registry access and also copies native DLLs to the Widnows system directory. For this reason you will need to run Visual Studio as administrator.
+
+
+2) Download the ASCOM Platform 6 SP2 from the ASCOM web site and install it on your DEV machine
+
+http://download.ascom-standards.org/ASCOMPlatform6SP2.exe
+
+
+3) If you want to compile the documentation you will also need to download and install the Sandcastle Help File Builder (SHFB)
+
+http://shfb.codeplex.com/

@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using ASCOM;
+using ASCOM.DeviceInterface.Utilities.Video;
 using ASCOM.Simulator.Utils;
 using ASCOM.Simulator.VideoCameraImpl;
 
@@ -525,7 +526,7 @@ namespace Simulator.VideoCameraImpl
 					if (isRecording)
 					{
 						int[,] pixels = GetCurrentImageFromBufferedFrame(currentFrame);
-						NativeHelpers.AddAviVideoFrame(pixels);
+                        AviTools.AddAviVideoFrame(pixels);
 					}
 				}
 
@@ -608,13 +609,13 @@ namespace Simulator.VideoCameraImpl
 
 				if (bufferedFrame.LastIntegratedFrameIndex < bufferedFrame.FirstIntegratedFrameIndex)
 				{
-					NativeHelpers.InitFrameIntegration(Width, Height);
+                    AviTools.InitFrameIntegration(Width, Height);
 
 					// Add all frames from bufferedFrame.FirstIntegratedFrameIndex to allImagesPixels.Count
 					for (int i = bufferedFrame.FirstIntegratedFrameIndex; i <= allImagesPixels.Count - 1; i++)
 					{
 						int[,] frame = GetCurrentImageNoBuffering(i);
-						NativeHelpers.AddIntegrationFrame(frame);
+                        AviTools.AddIntegrationFrame(frame);
 						counter++;
 					}
 
@@ -622,26 +623,26 @@ namespace Simulator.VideoCameraImpl
 					for (int i = 0; i <= bufferedFrame.LastIntegratedFrameIndex; i++)
 					{
 						int[,] frame = GetCurrentImageNoBuffering(i);
-						NativeHelpers.AddIntegrationFrame(frame);
+                        AviTools.AddIntegrationFrame(frame);
 						counter++;
 					}
 
-					lastBufferedImage = NativeHelpers.GetResultingIntegratedFrame(Width, Height);
+                    lastBufferedImage = AviTools.GetResultingIntegratedFrame(Width, Height);
 				}
 				else
 				{
 					// Add all frames from bufferedFrame.FirstIntegratedFrameIndex to bufferedFrame.LastIntegratedFrameIndex
 
-					NativeHelpers.InitFrameIntegration(Width, Height);
+                    AviTools.InitFrameIntegration(Width, Height);
 
 					for (int i = bufferedFrame.FirstIntegratedFrameIndex; i <= bufferedFrame.LastIntegratedFrameIndex; i++)
 					{
 						int[,] frame = GetCurrentImageNoBuffering(i);
-						NativeHelpers.AddIntegrationFrame(frame);
+                        AviTools.AddIntegrationFrame(frame);
 						counter++;
 					}
 
-					lastBufferedImage = NativeHelpers.GetResultingIntegratedFrame(Width, Height);
+                    lastBufferedImage = AviTools.GetResultingIntegratedFrame(Width, Height);
 				}
 			}
 			else
@@ -655,7 +656,7 @@ namespace Simulator.VideoCameraImpl
 		public void StartRecording(string fileName, double fps, bool showCompressionDialog)
 		{
 			if (!isRecording)
-				NativeHelpers.StartNewAviFile(fileName, width, height, 8, fps, showCompressionDialog);
+                AviTools.StartNewAviFile(fileName, width, height, 8, fps, showCompressionDialog);
 
 			isRecording = true;
 		}
@@ -669,7 +670,7 @@ namespace Simulator.VideoCameraImpl
 				SpinWait.SpinUntil(() => !isRecording, 5000);
 
 				if (!isRecording)
-					NativeHelpers.CloseAviFile();
+                    AviTools.CloseAviFile();
 				else
 					throw new DriverException("Cannot stop recording.");
 			}

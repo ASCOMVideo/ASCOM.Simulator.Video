@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using ASCOM.DeviceInterface;
 
-namespace Koyash.VideoUtilities
+namespace ASCOM.Utilities.Video
 {
 	public enum LumaConversionMode
 	{
@@ -30,11 +30,18 @@ namespace Koyash.VideoUtilities
 		GrayScale = 3
 	}
 
+    public class VideoNativeException : Exception
+    {
+        public VideoNativeException(string message)
+            : base(message)
+        { }
+    }
+
 	internal static class NativeHelpers
 	{
-        private const string KOYASH_VIDEO_UTILS_DLL_NAME = "Koyash.VideoUtilities.Native.dll";
+        private const string VIDEOUTILS_DLL_NAME = "ASCOM.Provisional.Video.Native.6.0.dll";
 
-		[DllImport(KOYASH_VIDEO_UTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         private static extern int GetBitmapPixels(
 			int width, 
 			int height, 
@@ -42,7 +49,7 @@ namespace Koyash.VideoUtilities
 			[In, MarshalAs(UnmanagedType.LPArray)] int[,] pixels,
 			[In, Out] byte[] bitmapBytes);
 
-		[DllImport(KOYASH_VIDEO_UTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
 		private static extern int GetColourBitmapPixels(
 			int width,
 			int height,
@@ -50,7 +57,7 @@ namespace Koyash.VideoUtilities
 			[In, MarshalAs(UnmanagedType.LPArray)] int[,,] pixels,
 			[In, Out] byte[] bitmapBytes);
 
-		[DllImport(KOYASH_VIDEO_UTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
 		private static extern int GetMonochromePixelsFromBitmap(
 			int width,
 			int height,
@@ -59,7 +66,7 @@ namespace Koyash.VideoUtilities
 			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,] bitmapBytes,
 			int mode);
 
-		[DllImport(KOYASH_VIDEO_UTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
 		private static extern int GetColourPixelsFromBitmap(
 			int width,
 			int height,
@@ -67,6 +74,44 @@ namespace Koyash.VideoUtilities
 			[In] IntPtr hBitmap,
 			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,,] bitmapBytes);
 
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int SetGamma(double gamma);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int ApplyGammaBrightness(
+            int width,
+            int height,
+            int bpp,
+            [In, Out] int[,] pixelsIn,
+            [In, Out] int[,] pixelsOut,
+            short brightness);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int InitFrameIntegration(int width, int height, int bpp);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int AddFrameForIntegration([In, Out] int[,] pixels);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int GetResultingIntegratedFrame([In, Out] int[,] pixels);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int CreateNewAviFile([MarshalAs(UnmanagedType.LPStr)]string fileName, int width, int height, int bpp, double fps, bool showCompressionDialog);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int AviFileAddFrame([In, MarshalAs(UnmanagedType.LPArray)] int[,] pixels);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int AviFileClose();
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int GetLastAviFileError(IntPtr errorMessage);
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern uint GetUsedAviCompression();
+
+        [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int SetWhiteBalance(int newWhiteBalance);
 
 		[DllImport("gdi32.dll")]
 		public static extern bool DeleteObject(IntPtr hObject);

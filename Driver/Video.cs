@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
+using ASCOM.DeviceInterface.Utilities.Video;
 using ASCOM.Simulator.Properties;
 using ASCOM.Simulator.Utils;
 using Microsoft.Win32;
@@ -711,7 +712,7 @@ namespace ASCOM.Simulator
 		{
 			get
 			{
-				return NativeHelpers.GetUsedAviFourCC();
+                return AviTools.GetUsedAviFourCC();
 			}
 		}
 

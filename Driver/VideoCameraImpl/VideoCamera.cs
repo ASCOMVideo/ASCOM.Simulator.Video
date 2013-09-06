@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ASCOM;
 using ASCOM.DeviceInterface;
+using ASCOM.DeviceInterface.Utilities.Video;
 using ASCOM.Simulator.Properties;
 using ASCOM.Simulator.Utils;
 
@@ -244,7 +245,7 @@ namespace Simulator.VideoCameraImpl
 			selectedDiscreteGammaIndex = newGammaIndex;
 
 			double gammaVal = GetCurrentGammaValue();
-			NativeHelpers.SetNewGamma(gammaVal);
+            AviTools.SetNewGamma(gammaVal);
 		}
 
 		public int GetCurrentGamma()
@@ -473,7 +474,7 @@ namespace Simulator.VideoCameraImpl
 			{
 				selectedWhiteBalance = newWhiteBalance;
 
-				NativeHelpers.SetNewWhiteBalance(selectedWhiteBalance);
+                AviTools.SetNewWhiteBalance(selectedWhiteBalance);
 			}
 		}
 
@@ -496,7 +497,7 @@ namespace Simulator.VideoCameraImpl
 				{
 					short brightness = (short)Math.Round(150 * ((double)currentGain / GetMaxGain()));
 
-					NativeHelpers.ApplyGammaBrightness(currentFrame, alteredPixels, bitmapPlayer.Width, bitmapPlayer.Height, brightness);
+                    AviTools.ApplyGammaBrightness(currentFrame, alteredPixels, bitmapPlayer.Width, bitmapPlayer.Height, brightness);
 
 					cameraFrame = new VideoCameraFrame()
 					{
