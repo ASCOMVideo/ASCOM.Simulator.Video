@@ -1,4 +1,16 @@
-﻿using System;
+﻿//tabs=4
+// --------------------------------------------------------------------------------
+//
+// ASCOM Video - Simulator
+//
+// Description:	Helper class used by the Video Simulator
+//
+// Author:		(HDP) Hristo Pavlov <hristo_dpavlov@yahoo.com>
+//
+// --------------------------------------------------------------------------------
+//
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

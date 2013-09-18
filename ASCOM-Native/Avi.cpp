@@ -37,7 +37,7 @@
 
 
 #include "Avi.h"
-#include "win32_LastError.h"
+//#include "win32_LastError.h"
 
 
 // First, we'll define the WAV file format.
@@ -122,13 +122,6 @@ HRESULT Avi::compression(HBITMAP const& bmp, AVICOMPRESSOPTIONS *opts, bool Show
   if (avi_==0) return AVIERR_BADHANDLE;
 
   DIBSECTION dibs; 
-  //::GetObject(bmp,sizeof(dibs),&dibs);
-  printf("Avi::compression going to GetObject 1\n");
-  if( ! ::GetObject(bmp, sizeof(dibs), &dibs)) {
-    printf("GetObject: %s\n", Win32_LastError().c_str());
-    //return -1;
-  }
-  printf("Avi::compression went to GetObject 1\n");
 
   TAviUtil *au = (TAviUtil*)avi_;
   if (au->iserr) return AVIERR_ERROR;
@@ -186,16 +179,7 @@ HRESULT Avi::compression(HBITMAP const& bmp, AVICOMPRESSOPTIONS *opts, bool Show
 
     ::AVISaveOptionsFree(1,aopts);
     printf("Avi::compression after AVISaveOptionsFree\n");
-
-    /*
-    DIBSECTION dibs; 
-    printf("Avi::compression going to GetObject\n");
-    if( !::GetObject(bmp, sizeof(dibs), &dibs)) {
-      printf("GetObject: %s\n", Win32_LastError());
-      return -1;
-    }
-    */
-
+    
     hr = ::AVIStreamSetFormat(au->psCompressed, 0, &dibs.dsBmih, dibs.dsBmih.biSize+dibs.dsBmih.biClrUsed*sizeof(RGBQUAD));
     if( hr != AVIERR_OK ) {
       au->iserr=true; 

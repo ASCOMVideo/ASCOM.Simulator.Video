@@ -1,9 +1,9 @@
 ﻿//tabs=4
 // --------------------------------------------------------------------------------
 //
-// Koyash.VideoUtilities - Video utilities library for use with ASCOM's IVideo
+// ASCOM Video
 //
-// Description: Helper class to manipulate video ImageArray data
+// Description:	Helper class to manipulate video ImageArray data
 //
 // Author:		(HDP) Hristo Pavlov <hristo_dpavlov@yahoo.com>
 //
@@ -37,7 +37,7 @@ namespace ASCOM.Utilities.Video
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(ICameraImage))]
     [Guid("41244296-BED8-4AC9-AA24-D4E90C6C95FA")]
-    [ProgId("Koyash.VideoUtilities.CameraImage")]
+    [ProgId("ASCOM.Utilities.CameraImage")]
     public class CameraImage : ICameraImage
     {
         private object imageArray;

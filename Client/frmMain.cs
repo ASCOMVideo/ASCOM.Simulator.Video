@@ -163,7 +163,7 @@ namespace Client
 			pnlVideoControls.Enabled = connected;
 			btnRecord.Enabled = connected && videoObject != null && videoObject.State == VideoCameraState.videoCameraRunning;
 			btnStopRecording.Enabled = connected && videoObject != null && videoObject.State == VideoCameraState.videoCameraRecording;
-			btnImageSettings.Enabled = connected && videoObject != null && videoObject.CanConfigureImage;
+			btnImageSettings.Enabled = connected && videoObject != null && videoObject.CanConfigureDeviceProperties;
 
 			if (videoObject != null)
 			{
@@ -324,6 +324,11 @@ namespace Client
 				get { return null; }
 			}
 
+			public Bitmap PreviewBitmap
+			{
+				get { return null; }
+			}
+
 			public long FrameNumber
 			{
 				get
@@ -371,7 +376,11 @@ namespace Client
 
 							Bitmap bmp = null;
 
-							if (Settings.Default.UseNativeCode)
+							if (Settings.Default.UsePreviewBitmap)
+							{
+								bmp = frame.PreviewBitmap;
+							}
+							else if (Settings.Default.UseNativeCode)
 							{
                                 cameraImage.SetImageArray(
                                     useVariantPixels 
@@ -633,7 +642,7 @@ namespace Client
 		private void btnImageSettings_Click(object sender, EventArgs e)
 		{
 			if (videoObject != null)
-				videoObject.ConfigureImage();
+				videoObject.ConfigureDeviceProperties();
 		}
 	}
 }

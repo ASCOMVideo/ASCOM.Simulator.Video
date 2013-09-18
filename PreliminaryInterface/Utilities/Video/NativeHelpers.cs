@@ -1,9 +1,9 @@
 ﻿//tabs=4
 // --------------------------------------------------------------------------------
 //
-// Koyash.VideoUtilities - Video utilities library for use with ASCOM's IVideo
+// ASCOM Video
 //
-// Description:	A managed wrapper to call unmanaged methods implemented in Koyash.VideoUtilities.Native.dll
+// Description:	Managed PInvoke definitions over the ASCOM.Unmanaged library 
 //
 // Author:		(HDP) Hristo Pavlov <hristo_dpavlov@yahoo.com>
 //
@@ -39,7 +39,7 @@ namespace ASCOM.Utilities.Video
 
 	internal static class NativeHelpers
 	{
-        private const string VIDEOUTILS_DLL_NAME = "ASCOM.Provisional.Video.Native.6.0.dll";
+        private const string VIDEOUTILS_DLL_NAME = "ASCOM.Native.6.1.dll";
 
 		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         private static extern int GetBitmapPixels(

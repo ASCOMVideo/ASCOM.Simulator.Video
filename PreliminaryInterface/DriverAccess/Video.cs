@@ -306,19 +306,19 @@ namespace ASCOM.DriverAccess
 			}
 		}
 
-		public bool CanConfigureImage
+		public bool CanConfigureDeviceProperties
 		{
 			get
 			{
-				return TargetInvocationShield(() => 
-					Convert.ToBoolean(comType.InvokeMember("CanConfigureImage", BindingFlags.GetProperty, (Binder)null, comObject, new object[0], CultureInfo.InvariantCulture)));
+				return TargetInvocationShield(() =>
+					Convert.ToBoolean(comType.InvokeMember("CanConfigureDeviceProperties", BindingFlags.GetProperty, (Binder)null, comObject, new object[0], CultureInfo.InvariantCulture)));
 			}
 		}
 
-		public void ConfigureImage()
+		public void ConfigureDeviceProperties()
 		{
-			TargetInvocationShield(() => 
-					comType.InvokeMember("ConfigureImage", BindingFlags.InvokeMethod, (Binder)null, comObject, new object[0], CultureInfo.InvariantCulture));
+			TargetInvocationShield(() =>
+					comType.InvokeMember("ConfigureDeviceProperties", BindingFlags.InvokeMethod, (Binder)null, comObject, new object[0], CultureInfo.InvariantCulture));
 		}
 
 		public bool Connected

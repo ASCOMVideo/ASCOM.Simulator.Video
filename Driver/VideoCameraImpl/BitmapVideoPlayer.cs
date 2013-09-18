@@ -23,9 +23,11 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using ASCOM;
+using ASCOM.DeviceInterface;
 using ASCOM.DeviceInterface.Utilities.Video;
 using ASCOM.Simulator.Utils;
 using ASCOM.Simulator.VideoCameraImpl;
+using ASCOM.Utilities.Video;
 
 namespace Simulator.VideoCameraImpl
 {
@@ -45,6 +47,8 @@ namespace Simulator.VideoCameraImpl
 
 		private int width = 640;
 		private int height = 480;
+
+		private ICameraImage cameraImage;
 
 		private Thread playerThread = null;
 		private static List<int[,]> allImagesPixels = new List<int[,]>();
@@ -76,6 +80,7 @@ namespace Simulator.VideoCameraImpl
 
 		public BitmapVideoPlayer(bool useEmbeddedVideo, string bitmapFilesLocation, int playbackBufferSize)
 		{
+			this.cameraImage = new CameraImage();
 			this.playbackBufferSize = playbackBufferSize;
 
 			integration = 1;
@@ -557,12 +562,13 @@ namespace Simulator.VideoCameraImpl
 
 		private BufferedFrameInfo nextBufferedFrame = new BufferedFrameInfo() { FirstIntegratedFrameIndex = -1 };
 
-		public void GetCurrentImage(out int[,] currentFrame, out long currentFrameNo)
+		public void GetCurrentImage(out int[,] currentFrame, out long currentFrameNo, out Bitmap previewBitmap)
 		{
 			if (errorBitmap != null)
 			{
 				currentFrame = errorPixels;
 				currentFrameNo = this.currentFrameNo;
+				previewBitmap = (Bitmap)errorBitmap.Clone();
 			}
 			else
 			{
@@ -588,6 +594,9 @@ namespace Simulator.VideoCameraImpl
 					currentFrame = GetCurrentImageFromBufferedFrame(this.currentFrame);
 					currentFrameNo = this.currentFrame.CurrentFrameNo;
 				}
+
+				cameraImage.SetImageArray(currentFrame, width, height, SensorType.Monochrome);
+				previewBitmap = cameraImage.GetDisplayBitmap();
 			}
 		}
 

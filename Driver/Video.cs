@@ -1040,7 +1040,7 @@ namespace ASCOM.Simulator
 		/// </summary>
 		/// <remarks><p style="color:red"><b>Must be implemented</b></p> 
 		/// </remarks>
-		public bool CanConfigureImage
+		public bool CanConfigureDeviceProperties
 		{
 			get { return true; }
 		}
@@ -1058,7 +1058,7 @@ namespace ASCOM.Simulator
 		/// displays the current Gamma and Gain it should update the values after this method has been called as those values for Gamma and Gain may have changed.</para>
 		/// <para>To support automated and unattended control over the specializded image settings available on this dialog the driver must also alow their control via <see cref="P:ASCOM.DeviceInterface.IVideo.SupportedActions"/></para>
 		/// </remarks>
-		public void ConfigureImage()
+		public void ConfigureDeviceProperties()
 		{
 			AssertConnected();
 

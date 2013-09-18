@@ -1,7 +1,7 @@
 //tabs=4
 // --------------------------------------------------------------------------------
 //
-// Koyash.VideoUtilities - Unmanaged implementation
+// ASCOM.Native - Unmanaged implementation
 //
 // Description:	Unmanaged methods to create bitmaps from various ImageArray data
 //

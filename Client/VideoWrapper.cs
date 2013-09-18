@@ -121,7 +121,7 @@ namespace Client
 			}
 		}
 
-		public bool CanConfigureImage
+		public bool CanConfigureDeviceProperties
 		{
 			get
 			{
@@ -129,19 +129,19 @@ namespace Client
 					ShieldedCall(
 						() =>
 							video != null &&
-							video.CanConfigureImage,
+							video.CanConfigureDeviceProperties,
 						false);
 			}
 		}
 
-		public void ConfigureImage()
+		public void ConfigureDeviceProperties()
 		{
 			if (video != null)
 			{
 				ShieldedCall(
 					delegate()
 					{
-						video.ConfigureImage();
+						video.ConfigureDeviceProperties();
 						return true;
 					},
 					false);

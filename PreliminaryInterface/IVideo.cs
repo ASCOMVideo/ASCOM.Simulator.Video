@@ -1,7 +1,7 @@
 ﻿//tabs=4
 // --------------------------------------------------------------------------------
 //
-// ASCOM Video Driver - Simulator
+// ASCOM Video
 //
 // Description:	The IVideo and IVideoFrame interfaces ver 1
 //
@@ -13,6 +13,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -27,10 +28,10 @@ namespace ASCOM.DeviceInterface
 	/// The interfaces are designed with the following use cases in mind
 	/// <list type="bullet">
 	///		<item><description>Instructing the camera to record a video file and save it on the file system</description></item>
-	///		<item><description>Occationally obtaining individual video frames as the camera is running in order to help with focusing, frame rate adjustments, field identification and others.</description></item>
+	///		<item><description>Occasionally obtaining individual video frames as the camera is running in order to help with focusing, frame rate adjustments, field identification and others.</description></item>
 	///	</list>
-	/// <p>Video cameras, unlike standard CCD cameras, are used to save video files. It is not practicle to try and display in realtime what the camera seas mostly for the following two reasons. Firstly the huge bandwidth 
-	/// that will be required to trasmit the images (25, 30 or sometimes more images per second) and seconly because of the performance impact on the driver and the hardware. Video is already very resource hungry
+	/// <p>Video cameras, unlike standard CCD cameras, are used to save video files. It is not practical to try and display in realtime what the camera seas mostly for the following two reasons. Firstly the huge bandwidth 
+	/// that will be required to transmit the images (25, 30 or sometimes more images per second) and seconly because of the performance impact on the driver and the hardware. Video is already very resource hungry
 	/// and implementing a separate streaming in the driver for realtime viewing by a client will make the system even more demanding for resources (RAM and CPU) that could affect the integrity of the video record (e.g. result in dropped frames) which is not desired and should be avoided.</p>
 	/// <p>Still the client will need to see what the camera is pointed to for example to work on the focusing so there is a need for viewing individual images produced by the video camera. This is done is by the client requesting
 	/// a single individual frame from the camera and doing this as many times as necessary.</p>
@@ -140,6 +141,18 @@ namespace ASCOM.DeviceInterface
 		object ImageArrayVariant { get; }
 
 		/// <summary>
+		/// Returns a preview bitmap for the last video frame. 
+		/// </summary>
+		/// <remarks>
+		/// <p style="color:red"><b>Must be implemented</b></p> The application can use this bitmap to show a preview image of the last video frame when required. This is a convenience property for 
+		/// those applications that don't require to process the <see cref="P:ASCOM.DeviceInterface.IVideoFrame.ImageArray"/> or <see cref="P:ASCOM.DeviceInterface.IVideoFrame.ImageArrayVariant"/>
+		/// but usually only adjust the video camera settings and then record a video file. 
+		/// <para>When a 24bit RGB image can be returned by the driver this should be the preferred format. </para>
+		/// </remarks>
+		/// <value>The preview bitmap image.</value>
+		Bitmap PreviewBitmap { get; }
+
+		/// <summary>
 		/// Returns the frame number.
 		/// </summary>
 		/// <remarks>
@@ -169,7 +182,7 @@ namespace ASCOM.DeviceInterface
 		/// <summary>
 		/// Returns additional information associated with the video frame.
 		/// </summary>
-		/// <remarks><p style="color:red"><b>Must be implemented</b></p> This property must return an empty string if no additonal video frame information is supported. Please do not throw a 
+		/// <remarks><p style="color:red"><b>Must be implemented</b></p> This property must return an empty string if no additional video frame information is supported. Please do not throw a 
 		/// <see cref="T:ASCOM.PropertyNotImplementedException"/>.
 		/// </remarks>
 		/// <value>A string in a well known format agreed by interested parties that represents any additional information associated with the video frame.</value>
@@ -273,7 +286,7 @@ namespace ASCOM.DeviceInterface
 		/// <param name="ActionParameters">List of required parameters or an <see cref="T:System.String">Empty String</see> if none are required.
 		/// </param>
 		///	<returns>A string response. The meaning of returned strings is set by the driver author.</returns>
-		/// <exception cref="T:ASCOM.MethodNotImplementedException">Throws this exception if no actions are suported.</exception>
+		/// <exception cref="T:ASCOM.MethodNotImplementedException">Throws this exception if no actions are supported.</exception>
 		/// <exception cref="T:ASCOM.ActionNotImplementedException">It is intended that the SupportedActions method will inform clients 
 		/// of driver capabilities, but the driver must still throw an ASCOM.ActionNotImplemented exception if it is asked to 
 		/// perform an action that it does not support.</exception>
@@ -309,7 +322,7 @@ namespace ASCOM.DeviceInterface
 		/// <remarks><p style="color:red"><b>Must be implemented</b></p> This method must return an empty arraylist if no actions are supported. Please do not throw a 
 		/// <see cref="T:ASCOM.PropertyNotImplementedException"/>.
 		/// <para>This is an aid to client authors and testers who would otherwise have to repeatedly poll the driver to determine its capabilities. 
-		/// Returned action names may be in mixed case to enhance presentation but  will be recognised case insensitively in 
+		/// Returned action names may be in mixed case to enhance presentation but  will be recognized case insensitively in 
 		/// the <see cref="M:ASCOM.DeviceInterface.IVideo.Action(System.String,System.String)">Action</see> method.</para>
 		/// <para>An array list collection has been selected as the vehicle for  action names in order to make it easier for clients to
 		/// determine whether a particular action is supported. This is easily done through the Contains method. Since the
@@ -379,7 +392,7 @@ namespace ASCOM.DeviceInterface
 		///	<exception cref="T:ASCOM.PropertyNotImplementedException">Must throw an exception if the camera supports only one integration rate (exposure) that cannot be changed.</exception>
 		///	<remarks>
 		///	<see cref="P:ASCOM.DeviceInterface.IVideo.IntegrationRate"/> can be used to adjust the integration rate (exposure) of the camera, if supported. A 0-based array of strings - <see cref="P:ASCOM.DeviceInterface.IVideo.SupportedIntegrationRates"/>, 
-		/// which correspond to different disctere integration rate settings supported by the camera will be returned. <see cref="P:ASCOM.DeviceInterface.IVideo.IntegrationRate"/> must be set to an integer in this range.
+		/// which correspond to different discrete integration rate settings supported by the camera will be returned. <see cref="P:ASCOM.DeviceInterface.IVideo.IntegrationRate"/> must be set to an integer in this range.
 		///	<para>The driver must default <see cref="P:ASCOM.DeviceInterface.IVideo.IntegrationRate"/> to a valid value when integration rate is supported by the camera. </para>
 		///	</remarks>				
 		int IntegrationRate { get; set; }
@@ -777,7 +790,7 @@ namespace ASCOM.DeviceInterface
 		///	<value>The video frame width.</value>
 		///	<exception cref="T:ASCOM.NotConnectedException">Must throw exception if the value is not known</exception>
 		/// <remarks>
-		/// For analogue video cameras working via a frame grabber the dimentions of the video frames may be different than the dimention of the CCD chip
+		/// For analogue video cameras working via a frame grabber the dimensions of the video frames may be different than the dimension of the CCD chip
 		/// </remarks>
 		int Width { get; }
 
@@ -787,7 +800,7 @@ namespace ASCOM.DeviceInterface
 		///	<value>The video frame height.</value>
 		///	<exception cref="T:ASCOM.NotConnectedException">Must throw exception if the value is not known</exception>
 		/// <remarks>
-		/// For analogue video cameras working via a frame grabber the dimentions of the video frames may be different than the dimention of the CCD chip
+		/// For analogue video cameras working via a frame grabber the dimensions of the video frames may be different than the dimension of the CCD chip
 		/// </remarks>
 		int Height { get; }
 
@@ -920,7 +933,7 @@ namespace ASCOM.DeviceInterface
 		///	<remarks>
 		///	<see cref="P:ASCOM.DeviceInterface.IVideo.Gain"/> can be used to adjust the gain setting of the camera, if supported. There are two typical usage scenarios:
 		///	<ul>
-		///		<li>Discrete gain video cameras will return a 0-based array of strings - <see cref="P:ASCOM.DeviceInterface.IVideo.Gains"/>, which correspond to different disctere gain settings supported by the camera. <see cref="P:ASCOM.DeviceInterface.IVideo.Gain"/> must be set to an integer in this range. <see cref="P:ASCOM.DeviceInterface.IVideo.GainMin"/> and <see cref="P:ASCOM.DeviceInterface.IVideo.GainMax"/> must thrown an exception if 
+		///		<li>Discrete gain video cameras will return a 0-based array of strings - <see cref="P:ASCOM.DeviceInterface.IVideo.Gains"/>, which correspond to different discrete gain settings supported by the camera. <see cref="P:ASCOM.DeviceInterface.IVideo.Gain"/> must be set to an integer in this range. <see cref="P:ASCOM.DeviceInterface.IVideo.GainMin"/> and <see cref="P:ASCOM.DeviceInterface.IVideo.GainMax"/> must thrown an exception if 
 		///	this mode is used.</li>
 		///		<li>Adjustable gain video cameras - <see cref="P:ASCOM.DeviceInterface.IVideo.GainMin"/> and <see cref="P:ASCOM.DeviceInterface.IVideo.GainMax"/> return integers, which specify the valid range for <see cref="P:ASCOM.DeviceInterface.IVideo.GainMin"/> and <see cref="P:ASCOM.DeviceInterface.IVideo.Gain"/>.</li>
 		///	</ul>
@@ -958,7 +971,7 @@ namespace ASCOM.DeviceInterface
 		///	<exception cref="T:ASCOM.PropertyNotImplementedException">Must throw an exception if gamma is not supported</exception>
 		///	<remarks>
 		///	<see cref="P:ASCOM.DeviceInterface.IVideo.Gamma"/> can be used to adjust the gamma setting of the camera, if supported. A 0-based array of strings - <see cref="P:ASCOM.DeviceInterface.IVideo.Gammas"/>, 
-		/// which correspond to different disctere gamma settings supported by the camera will be returned. <see cref="P:ASCOM.DeviceInterface.IVideo.Gamma"/> must be set to an integer in this range.
+		/// which correspond to different discrete gamma settings supported by the camera will be returned. <see cref="P:ASCOM.DeviceInterface.IVideo.Gamma"/> must be set to an integer in this range.
 		///	<para>The driver must default <see cref="P:ASCOM.DeviceInterface.IVideo.Gamma"/> to a valid value. </para>
 		///	</remarks>
 		int Gamma { get; set; }
@@ -981,23 +994,25 @@ namespace ASCOM.DeviceInterface
 
 
 		/// <summary>
-		/// Returns True if the camera supports custom image configuration via the <see cref="M:ASCOM.DeviceInterface.IVideo.ConfigureImage"/> method.
+		/// Returns True if the driver supports custom device properties configuration via the <see cref="M:ASCOM.DeviceInterface.IVideo.ConfigureDeviceProperties"/> method.
 		/// </summary>
 		/// <remarks><p style="color:red"><b>Must be implemented</b></p> 
 		/// </remarks>
-		bool CanConfigureImage { get; }
+		bool CanConfigureDeviceProperties { get; }
 
 		/// <summary>
-		/// Displays an image configuration dialog that allows configuration of specialized image settings such as White or Colour Balance for example. 
+		/// Displays a device properties configuration dialog that allows the configuration of specialized settings such as White Balance or Sharpness for example.   
 		/// </summary>
 		///	<exception cref="T:ASCOM.NotConnectedException">Must throw an exception if the camera is not connected.</exception>
-		///	<exception cref="T:ASCOM.MethodNotImplementedException">Must throw an exception if ConfigureImage is not supported.</exception>
+		///	<exception cref="T:ASCOM.MethodNotImplementedException">Must throw an exception if the property is not supported.</exception>
 		/// <remarks>
-		/// <para>This dialog is not intended to be used in unattended mode but can give great control over the image quality for some drivers and devices. The dialog may also allow 
-		/// chaning settings such as Gamma and Gain that can be also controlled directly via the <see cref="T:ASCOM.DeviceInterface.IVideo"/> interface. If a client software 
+		/// <para>The dialog could also provide buttons for cameras that can be controlled via on screen display of menues and a set of navigation buttons such as Up, Down, Left, Right and Enter. 
+		/// This dialog is not intended to be used in unattended mode but can give greater control over video camera that provide more specialized features. The dialog may also allow 
+		/// changing settings such as Gamma and Gain that can be also controlled directly via the <see cref="T:ASCOM.DeviceInterface.IVideo"/> interface. If a client software 
 		/// displays the current Gamma and Gain it should update the values after this method has been called as those values for Gamma and Gain may have changed.</para>
-		/// <para>To support automated and unattended control over the specializded image settings available on this dialog the driver must also alow their control via <see cref="P:ASCOM.DeviceInterface.IVideo.SupportedActions"/></para>
+		/// <para>To support automated and unattended control over the specialized device settings or functions available on this dialog the driver must also allow their control via <see cref="P:ASCOM.DeviceInterface.IVideo.SupportedActions"/>. 
+		/// This dialog is meant to be used by the applications to allow the user to adjust specialized device settings when those applications don't specifically use the specialized settings in their functionality.</para>
 		/// </remarks>
-		void ConfigureImage();
+		void ConfigureDeviceProperties();
 	}
 }

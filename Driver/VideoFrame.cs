@@ -31,6 +31,7 @@ namespace ASCOM.Simulator
 		private string exposureStartTime;
 		private int[,] pixels;
 		private object[,] pixelsVariant;
+		private Bitmap previewBitmap;
 
 		private static int s_Counter = 0;
 
@@ -68,6 +69,8 @@ namespace ASCOM.Simulator
 				rv.pixels = new int[height, width];
 				rv.pixelsVariant = null;
 			}
+
+			rv.previewBitmap = cameraFrame.PreviewBitmap;
 
 			if (variant)
 				Array.Copy(cameraFrame.Pixels, rv.pixelsVariant, cameraFrame.Pixels.Length);
@@ -131,6 +134,11 @@ namespace ASCOM.Simulator
 
 				return rv;
 			}
+		}
+
+		public Bitmap PreviewBitmap
+		{
+			get { return previewBitmap; }
 		}
 
 		/// <summary>

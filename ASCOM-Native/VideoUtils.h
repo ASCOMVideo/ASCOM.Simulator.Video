@@ -4,7 +4,7 @@
 //tabs=4
 // --------------------------------------------------------------------------------
 //
-// ASCOM Video Driver - Unmanaged Utils
+// ASCOM Video Simulator - Unmanaged Utils
 //
 // Description:	Header file 
 //

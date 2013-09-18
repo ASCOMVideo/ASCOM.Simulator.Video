@@ -43,6 +43,7 @@
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.rbPixelsVariant = new System.Windows.Forms.RadioButton();
 			this.rbPixelsIntegers = new System.Windows.Forms.RadioButton();
+			this.rbPreviewBitmap = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudGainIntervals)).BeginInit();
 			this.groupBox2.SuspendLayout();
@@ -51,11 +52,12 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.rbPreviewBitmap);
 			this.groupBox1.Controls.Add(this.rbManaged);
 			this.groupBox1.Controls.Add(this.rbNative);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(181, 52);
+			this.groupBox1.Size = new System.Drawing.Size(381, 52);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Bitmap Handling";
@@ -63,7 +65,7 @@
 			// rbManaged
 			// 
 			this.rbManaged.AutoSize = true;
-			this.rbManaged.Location = new System.Drawing.Point(94, 25);
+			this.rbManaged.Location = new System.Drawing.Point(114, 25);
 			this.rbManaged.Name = "rbManaged";
 			this.rbManaged.Size = new System.Drawing.Size(70, 17);
 			this.rbManaged.TabIndex = 3;
@@ -143,7 +145,7 @@
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.nudGainIntervals);
-			this.groupBox2.Location = new System.Drawing.Point(213, 13);
+			this.groupBox2.Location = new System.Drawing.Point(213, 70);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(181, 51);
 			this.groupBox2.TabIndex = 8;
@@ -182,6 +184,16 @@
 			this.rbPixelsIntegers.TabStop = true;
 			this.rbPixelsIntegers.Text = "Integers";
 			this.rbPixelsIntegers.UseVisualStyleBackColor = true;
+			// 
+			// rbPreviewBitmap
+			// 
+			this.rbPreviewBitmap.AutoSize = true;
+			this.rbPreviewBitmap.Location = new System.Drawing.Point(227, 25);
+			this.rbPreviewBitmap.Name = "rbPreviewBitmap";
+			this.rbPreviewBitmap.Size = new System.Drawing.Size(98, 17);
+			this.rbPreviewBitmap.TabIndex = 4;
+			this.rbPreviewBitmap.Text = "Preview Bitmap";
+			this.rbPreviewBitmap.UseVisualStyleBackColor = true;
 			// 
 			// frmSettings
 			// 
@@ -230,5 +242,6 @@
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.RadioButton rbPixelsVariant;
 		private System.Windows.Forms.RadioButton rbPixelsIntegers;
+		private System.Windows.Forms.RadioButton rbPreviewBitmap;
 	}
 }

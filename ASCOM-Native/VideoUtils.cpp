@@ -20,7 +20,6 @@
 #include "Avi.h"
 #include "Gdiplus.h"
 
-
 double s_CurrentGamma = 1.0;
 int s_GammaMap256[256];
 int s_GammaMap4096[4096]; 
@@ -225,6 +224,7 @@ HRESULT GetResultingIntegratedFrame(long* pixels)
 		return S_FALSE;
 }
 
+
 Avi* s_AviFile = NULL;
 IStream* s_pStream = NULL;
 
@@ -388,7 +388,6 @@ BYTE* BuildBitmap(long width, long height, long bpp, long* pixels)
 
 	return bitmapPixelsStartPtr;
 }
-
 
 HRESULT AviFileAddFrame(long* pixels)
 {

@@ -29,8 +29,17 @@ namespace Client
 		{
 			InitializeComponent();
 
-			rbNative.Checked = Settings.Default.UseNativeCode;
-			rbManaged.Checked = !Settings.Default.UseNativeCode;
+			rbPreviewBitmap.Checked = false;
+			rbNative.Checked = false;
+			rbManaged.Checked = false;
+
+			if (Settings.Default.UsePreviewBitmap)
+				rbPreviewBitmap.Checked = true;
+			else if (Settings.Default.UseNativeCode)
+				rbNative.Checked = true;
+			else
+				rbManaged.Checked = true;
+			
 			nudGainIntervals.Value = Settings.Default.FreeRangeGainIntervals;
 
 			tbxOutputLocation.Text = Settings.Default.OutputLocation;
@@ -52,7 +61,9 @@ namespace Client
 			}
 
 			Settings.Default.FreeRangeGainIntervals = (short)nudGainIntervals.Value;
+
 			Settings.Default.UseNativeCode = rbNative.Checked;
+			Settings.Default.UsePreviewBitmap = rbPreviewBitmap.Checked;
 			Settings.Default.OutputLocation = tbxOutputLocation.Text;
 			Settings.Default.VariantPixels = rbPixelsVariant.Checked;
 
