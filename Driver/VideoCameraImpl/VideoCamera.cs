@@ -53,7 +53,9 @@ namespace Simulator.VideoCameraImpl
 		private short freeRangeGainValue;
 		private int selectedDiscreteGainsIndex;
 
+		private short freeRangeGammaValue;
 		private int selectedDiscreteGammaIndex;
+
 		public string selectedIntegrationRate;
 
 		public int selectedWhiteBalance = 0;
@@ -251,7 +253,19 @@ namespace Simulator.VideoCameraImpl
 
 		public int GetCurrentGamma()
 		{
-			return selectedDiscreteGammaIndex;
+			if (selectedDiscreteGammaIndex == -1)
+				return freeRangeGammaValue;
+			else
+				return (short)selectedDiscreteGammaIndex;
+		}
+
+		public void SetDiscreteGamma(string gammaNameOrValue)
+		{
+			selectedDiscreteGammaIndex = supportedGammas.IndexOf(gammaNameOrValue);
+			if (selectedDiscreteGammaIndex != -1)
+			{
+				freeRangeGammaValue = short.MinValue;
+			}
 		}
 
 		private static Regex GAMMA_REGEX = new Regex("\\((?<InBracketsValue>[^\\)]+)\\)");

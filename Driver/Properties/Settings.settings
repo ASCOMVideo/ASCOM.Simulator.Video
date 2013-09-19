@@ -71,5 +71,14 @@
     <Setting Name="ShowCompressionDialog" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="SupportsGammaRange" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GammaMin" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="GammaMax" Type="System.Int16" Scope="User">
+      <Value Profile="(Default)">256</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

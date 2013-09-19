@@ -283,6 +283,24 @@ namespace ASCOM.DriverAccess
 			}
 		}
 
+		public short GammaMax
+		{
+			get
+			{
+				return TargetInvocationShield(() =>
+					Convert.ToInt16(comType.InvokeMember("GammaMax", BindingFlags.GetProperty, (Binder)null, comObject, new object[0], CultureInfo.InvariantCulture)));
+			}
+		}
+
+		public short GammaMin
+		{
+			get
+			{
+				return TargetInvocationShield(() =>
+					Convert.ToInt16(comType.InvokeMember("GammaMin", BindingFlags.GetProperty, (Binder)null, comObject, new object[0], CultureInfo.InvariantCulture)));
+			}
+		}
+
 		public int Gamma
 		{
 			get

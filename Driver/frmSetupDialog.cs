@@ -94,10 +94,13 @@ namespace ASCOM.Simulator
 			tbxBitmapFolder.Text = Properties.Settings.Default.SourceBitmapFilesLocation;
 
 			rbGainRange.Checked = Properties.Settings.Default.SupportsGainRange;
+			rbGammaRange.Checked = Properties.Settings.Default.SupportsGammaRange;
 			rbDiscreteGain.Checked = !Properties.Settings.Default.SupportsGainRange;
 			nudMinGain.Value = Properties.Settings.Default.GainMin;
 			nudMaxGain.Value = Properties.Settings.Default.GainMax;
 			tbxSupportedGains.Lines = Properties.Settings.Default.Gains.Split(new string[] { "#;" }, StringSplitOptions.RemoveEmptyEntries);
+			nudMinGamma.Value = Properties.Settings.Default.GammaMin;
+			nudMaxGamma.Value = Properties.Settings.Default.GammaMax;
 			tbxSupportedGammas.Lines = Properties.Settings.Default.Gammas.Split(new string[] { "#;" }, StringSplitOptions.RemoveEmptyEntries);
 
 			cbxBuffering.Checked = Properties.Settings.Default.UseBuffering;
@@ -148,12 +151,18 @@ namespace ASCOM.Simulator
 			}
 
 			Properties.Settings.Default.SupportsGainRange = rbGainRange.Checked;
+			Properties.Settings.Default.SupportsGammaRange = rbGammaRange.Checked;
 			Properties.Settings.Default.Gains = string.Join("#;", tbxSupportedGains.Lines);
 			Properties.Settings.Default.Gammas = string.Join("#;", tbxSupportedGammas.Lines);
 			if (Properties.Settings.Default.SupportsGainRange)
 			{
 				Properties.Settings.Default.GainMin = (short)nudMinGain.Value;
 				Properties.Settings.Default.GainMax = (short)nudMaxGain.Value;
+			}
+			if (Properties.Settings.Default.SupportsGammaRange)
+			{
+				Properties.Settings.Default.GammaMin = (short)nudMinGamma.Value;
+				Properties.Settings.Default.GammaMax = (short)nudMaxGamma.Value;
 			}
 
 			Properties.Settings.Default.UseBuffering = cbxBuffering.Checked;
@@ -291,6 +300,12 @@ namespace ASCOM.Simulator
 		private void cbxBuffering_CheckedChanged(object sender, EventArgs e)
 		{
 			pnlBufferingControls.Enabled = cbxBuffering.Checked;
+		}
+
+		private void rbGammaRange_CheckedChanged(object sender, EventArgs e)
+		{
+			pnlRangeGamma.Enabled = rbGammaRange.Checked;
+			tbxSupportedGammas.Enabled = !rbGammaRange.Checked;
 		}
 	}
 }

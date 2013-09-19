@@ -28,6 +28,7 @@ namespace ASCOM.Simulator
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSetupDialog));
 			this.cmdOK = new System.Windows.Forms.Button();
 			this.cmdCancel = new System.Windows.Forms.Button();
@@ -67,6 +68,7 @@ namespace ASCOM.Simulator
 			this.tbxSupportedExposures = new System.Windows.Forms.TextBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.cbxShowCompressionDialog = new System.Windows.Forms.CheckBox();
 			this.pnlBufferingControls = new System.Windows.Forms.Panel();
 			this.label17 = new System.Windows.Forms.Label();
 			this.nudBufferSize = new System.Windows.Forms.NumericUpDown();
@@ -79,9 +81,6 @@ namespace ASCOM.Simulator
 			this.rbUserBitmaps = new System.Windows.Forms.RadioButton();
 			this.rbDriverDefaultSource = new System.Windows.Forms.RadioButton();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label12 = new System.Windows.Forms.Label();
-			this.tbxSupportedGammas = new System.Windows.Forms.TextBox();
 			this.pnlRangeGain = new System.Windows.Forms.Panel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.nudMinGain = new System.Windows.Forms.NumericUpDown();
@@ -93,7 +92,16 @@ namespace ASCOM.Simulator
 			this.rbGainRange = new System.Windows.Forms.RadioButton();
 			this.btnReset = new System.Windows.Forms.Button();
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-			this.cbxShowCompressionDialog = new System.Windows.Forms.CheckBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.rbDiscreteGamma = new System.Windows.Forms.RadioButton();
+			this.tbxSupportedGammas = new System.Windows.Forms.TextBox();
+			this.pnlRangeGamma = new System.Windows.Forms.Panel();
+			this.label12 = new System.Windows.Forms.Label();
+			this.nudMinGamma = new System.Windows.Forms.NumericUpDown();
+			this.nudMaxGamma = new System.Windows.Forms.NumericUpDown();
+			this.label18 = new System.Windows.Forms.Label();
+			this.rbGammaRange = new System.Windows.Forms.RadioButton();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.picASCOM)).BeginInit();
 			this.tabControl1.SuspendLayout();
 			this.tabGeneral.SuspendLayout();
@@ -116,6 +124,10 @@ namespace ASCOM.Simulator
 			((System.ComponentModel.ISupportInitialize)(this.nudMinGain)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudMaxGain)).BeginInit();
 			this.pnlDiscreteGain.SuspendLayout();
+			this.groupBox3.SuspendLayout();
+			this.pnlRangeGamma.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudMinGamma)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMaxGamma)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cmdOK
@@ -522,6 +534,16 @@ namespace ASCOM.Simulator
 			this.tabPage3.Text = "Video Source";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
+			// cbxShowCompressionDialog
+			// 
+			this.cbxShowCompressionDialog.AutoSize = true;
+			this.cbxShowCompressionDialog.Location = new System.Drawing.Point(16, 236);
+			this.cbxShowCompressionDialog.Name = "cbxShowCompressionDialog";
+			this.cbxShowCompressionDialog.Size = new System.Drawing.Size(179, 17);
+			this.cbxShowCompressionDialog.TabIndex = 23;
+			this.cbxShowCompressionDialog.Text = "Show Video Compression Dialog";
+			this.cbxShowCompressionDialog.UseVisualStyleBackColor = true;
+			// 
 			// pnlBufferingControls
 			// 
 			this.pnlBufferingControls.Controls.Add(this.label17);
@@ -637,9 +659,7 @@ namespace ASCOM.Simulator
 			// 
 			// tabPage4
 			// 
-			this.tabPage4.Controls.Add(this.label15);
-			this.tabPage4.Controls.Add(this.label12);
-			this.tabPage4.Controls.Add(this.tbxSupportedGammas);
+			this.tabPage4.Controls.Add(this.groupBox3);
 			this.tabPage4.Controls.Add(this.pnlRangeGain);
 			this.tabPage4.Controls.Add(this.pnlDiscreteGain);
 			this.tabPage4.Controls.Add(this.rbDiscreteGain);
@@ -651,33 +671,6 @@ namespace ASCOM.Simulator
 			this.tabPage4.TabIndex = 4;
 			this.tabPage4.Text = "Gain & Gamma";
 			this.tabPage4.UseVisualStyleBackColor = true;
-			// 
-			// label15
-			// 
-			this.label15.Location = new System.Drawing.Point(264, 166);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(201, 52);
-			this.label15.TabIndex = 22;
-			this.label15.Text = "NOTE: This driver supports the values \'LO\', \'HI\', \'OFF\', a number: 0.33 or a name" +
-    " and number in brackets: MAX (0.25)";
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(264, 8);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(100, 13);
-			this.label12.TabIndex = 21;
-			this.label12.Text = "Supported Gammas";
-			// 
-			// tbxSupportedGammas
-			// 
-			this.tbxSupportedGammas.Location = new System.Drawing.Point(264, 29);
-			this.tbxSupportedGammas.Multiline = true;
-			this.tbxSupportedGammas.Name = "tbxSupportedGammas";
-			this.tbxSupportedGammas.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbxSupportedGammas.Size = new System.Drawing.Size(186, 129);
-			this.tbxSupportedGammas.TabIndex = 20;
 			// 
 			// pnlRangeGain
 			// 
@@ -772,15 +765,93 @@ namespace ASCOM.Simulator
 			this.btnReset.UseVisualStyleBackColor = true;
 			this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
 			// 
-			// cbxShowCompressionDialog
+			// groupBox3
 			// 
-			this.cbxShowCompressionDialog.AutoSize = true;
-			this.cbxShowCompressionDialog.Location = new System.Drawing.Point(16, 236);
-			this.cbxShowCompressionDialog.Name = "cbxShowCompressionDialog";
-			this.cbxShowCompressionDialog.Size = new System.Drawing.Size(179, 17);
-			this.cbxShowCompressionDialog.TabIndex = 23;
-			this.cbxShowCompressionDialog.Text = "Show Video Compression Dialog";
-			this.cbxShowCompressionDialog.UseVisualStyleBackColor = true;
+			this.groupBox3.Controls.Add(this.pnlRangeGamma);
+			this.groupBox3.Controls.Add(this.rbGammaRange);
+			this.groupBox3.Controls.Add(this.rbDiscreteGamma);
+			this.groupBox3.Controls.Add(this.tbxSupportedGammas);
+			this.groupBox3.Location = new System.Drawing.Point(248, -1);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(268, 272);
+			this.groupBox3.TabIndex = 24;
+			this.groupBox3.TabStop = false;
+			// 
+			// rbDiscreteGamma
+			// 
+			this.rbDiscreteGamma.AutoSize = true;
+			this.rbDiscreteGamma.Checked = true;
+			this.rbDiscreteGamma.Location = new System.Drawing.Point(10, 11);
+			this.rbDiscreteGamma.Name = "rbDiscreteGamma";
+			this.rbDiscreteGamma.Size = new System.Drawing.Size(135, 17);
+			this.rbDiscreteGamma.TabIndex = 26;
+			this.rbDiscreteGamma.Text = "Discrete gamma values";
+			this.rbDiscreteGamma.UseVisualStyleBackColor = true;
+			// 
+			// tbxSupportedGammas
+			// 
+			this.tbxSupportedGammas.Location = new System.Drawing.Point(19, 34);
+			this.tbxSupportedGammas.Multiline = true;
+			this.tbxSupportedGammas.Name = "tbxSupportedGammas";
+			this.tbxSupportedGammas.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.tbxSupportedGammas.Size = new System.Drawing.Size(186, 129);
+			this.tbxSupportedGammas.TabIndex = 24;
+			this.toolTip1.SetToolTip(this.tbxSupportedGammas, "NOTE: This driver supports the values \'LO\', \'HI\', \'OFF\', a number: 0.33 or a name" +
+        " and number in brackets: MAX (0.25)");
+			// 
+			// pnlRangeGamma
+			// 
+			this.pnlRangeGamma.Controls.Add(this.label12);
+			this.pnlRangeGamma.Controls.Add(this.nudMinGamma);
+			this.pnlRangeGamma.Controls.Add(this.nudMaxGamma);
+			this.pnlRangeGamma.Controls.Add(this.label18);
+			this.pnlRangeGamma.Location = new System.Drawing.Point(22, 200);
+			this.pnlRangeGamma.Name = "pnlRangeGamma";
+			this.pnlRangeGamma.Size = new System.Drawing.Size(179, 61);
+			this.pnlRangeGamma.TabIndex = 28;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(98, 6);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(66, 13);
+			this.label12.TabIndex = 15;
+			this.label12.Text = "Max Gamma";
+			// 
+			// nudMinGamma
+			// 
+			this.nudMinGamma.Location = new System.Drawing.Point(9, 23);
+			this.nudMinGamma.Name = "nudMinGamma";
+			this.nudMinGamma.Size = new System.Drawing.Size(72, 20);
+			this.nudMinGamma.TabIndex = 12;
+			// 
+			// nudMaxGamma
+			// 
+			this.nudMaxGamma.Location = new System.Drawing.Point(101, 23);
+			this.nudMaxGamma.Name = "nudMaxGamma";
+			this.nudMaxGamma.Size = new System.Drawing.Size(72, 20);
+			this.nudMaxGamma.TabIndex = 13;
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(6, 6);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(63, 13);
+			this.label18.TabIndex = 14;
+			this.label18.Text = "Min Gamma";
+			// 
+			// rbGammaRange
+			// 
+			this.rbGammaRange.AutoSize = true;
+			this.rbGammaRange.Location = new System.Drawing.Point(7, 180);
+			this.rbGammaRange.Name = "rbGammaRange";
+			this.rbGammaRange.Size = new System.Drawing.Size(140, 17);
+			this.rbGammaRange.TabIndex = 27;
+			this.rbGammaRange.Text = "Range of gamma values";
+			this.rbGammaRange.UseVisualStyleBackColor = true;
+			this.rbGammaRange.CheckedChanged += new System.EventHandler(this.rbGammaRange_CheckedChanged);
 			// 
 			// frmSetupDialog
 			// 
@@ -834,6 +905,12 @@ namespace ASCOM.Simulator
 			((System.ComponentModel.ISupportInitialize)(this.nudMaxGain)).EndInit();
 			this.pnlDiscreteGain.ResumeLayout(false);
 			this.pnlDiscreteGain.PerformLayout();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
+			this.pnlRangeGamma.ResumeLayout(false);
+			this.pnlRangeGamma.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudMinGamma)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudMaxGamma)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -886,8 +963,6 @@ namespace ASCOM.Simulator
 		private System.Windows.Forms.Panel pnlRangeGain;
 		private System.Windows.Forms.Panel pnlDiscreteGain;
 		private System.Windows.Forms.TextBox tbxSupportedGains;
-		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.TextBox tbxSupportedGammas;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.NumericUpDown nudPixelSizeY;
@@ -899,12 +974,21 @@ namespace ASCOM.Simulator
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown nudMaxExposureSec;
 		private System.Windows.Forms.NumericUpDown nudMinExposureSec;
-		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Panel pnlBufferingControls;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.NumericUpDown nudBufferSize;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.CheckBox cbxBuffering;
 		private System.Windows.Forms.CheckBox cbxShowCompressionDialog;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.Panel pnlRangeGamma;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.NumericUpDown nudMinGamma;
+		private System.Windows.Forms.NumericUpDown nudMaxGamma;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.RadioButton rbGammaRange;
+		private System.Windows.Forms.RadioButton rbDiscreteGamma;
+		private System.Windows.Forms.TextBox tbxSupportedGammas;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
