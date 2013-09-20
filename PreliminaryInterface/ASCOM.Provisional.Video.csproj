@@ -98,9 +98,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Windows\assembly\GAC_MSIL\ASCOM.Utilities\6.0.0.0__565de7938946fba7\ASCOM.Utilities.dll</HintPath>
     </Reference>
+    <Reference Include="DirectShowLib-2005">
+      <HintPath>lib\DirectShowLib-2005.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -108,6 +112,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeviceInterface\DirectShowVideo\DirectShowVideoBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\DirectShowVideoSettings.cs" />
+    <Compile Include="DeviceInterface\DirectShowVideo\frmSetupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\frmSetupDialog.designer.cs">
+      <DependentUpon>frmSetupDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\CrossbarHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\DirectShowCapture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\VideoCameraFrame.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\VideoCapture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\VideoCodecs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoFrame.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DriverAccess\Video.cs" />
     <Compile Include="IVideo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -139,6 +171,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DeviceInterface\DirectShowVideo\frmSetupDialog.resx">
+      <DependentUpon>frmSetupDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

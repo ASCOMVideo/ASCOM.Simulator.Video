@@ -19,17 +19,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using ASCOM.DeviceInterface;
+using ASCOM.DeviceInterface.DirectShowVideo;
 
 namespace ASCOM.Utilities.Video
 {
-	public enum LumaConversionMode
-	{
-		R = 0,
-		G = 1,
-		B = 2,
-		GrayScale = 3
-	}
-
     public class VideoNativeException : Exception
     {
         public VideoNativeException(string message)

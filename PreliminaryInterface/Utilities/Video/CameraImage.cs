@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using ASCOM.DeviceInterface;
+using ASCOM.DeviceInterface.DirectShowVideo;
 
 namespace ASCOM.Utilities.Video
 {
