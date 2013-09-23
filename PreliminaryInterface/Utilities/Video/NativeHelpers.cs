@@ -30,6 +30,14 @@ namespace ASCOM.Utilities.Video
         { }
     }
 
+	public enum FlipMode
+	{
+		None = 0,
+		FlipHorizontally = 1,
+		FlipVertically = 2,
+		FlipBoth = 3,
+	}
+
 	internal static class NativeHelpers
 	{
         private const string VIDEOUTILS_DLL_NAME = "ASCOM.Native.6.1.dll";
@@ -39,6 +47,7 @@ namespace ASCOM.Utilities.Video
 			int width, 
 			int height, 
 			int bpp,
+			FlipMode flipMode,
 			[In, MarshalAs(UnmanagedType.LPArray)] int[,] pixels,
 			[In, Out] byte[] bitmapBytes);
 
@@ -47,6 +56,7 @@ namespace ASCOM.Utilities.Video
 			int width,
 			int height,
 			int bpp,
+			FlipMode flipMode,
 			[In, MarshalAs(UnmanagedType.LPArray)] int[,,] pixels,
 			[In, Out] byte[] bitmapBytes);
 
@@ -55,6 +65,7 @@ namespace ASCOM.Utilities.Video
 			int width,
 			int height,
 			int bpp,
+			FlipMode flipMode,
 			[In] IntPtr hBitmap,
 			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,] bitmapBytes,
 			int mode);
@@ -64,6 +75,7 @@ namespace ASCOM.Utilities.Video
 			int width,
 			int height,
 			int bpp,
+			FlipMode flipMode,
 			[In] IntPtr hBitmap,
 			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,,] bitmapBytes);
 
@@ -110,34 +122,34 @@ namespace ASCOM.Utilities.Video
 		public static extern bool DeleteObject(IntPtr hObject);
 
 
-        public static Bitmap PrepareBitmapForDisplay(int[,] imageArray, int width, int height)
+		public static Bitmap PrepareBitmapForDisplay(int[,] imageArray, int width, int height, FlipMode flipMode)
         {
-            return PrepareBitmapForDisplay(imageArray, width, height, false);
+			return PrepareBitmapForDisplay(imageArray, width, height, false, flipMode);
         }
 
-        public static Bitmap PrepareBitmapForDisplay(object[,] imageArray, int width, int height)
+		public static Bitmap PrepareBitmapForDisplay(object[,] imageArray, int width, int height, FlipMode flipMode)
         {
-            return PrepareBitmapForDisplay(imageArray, width, height, true);
+			return PrepareBitmapForDisplay(imageArray, width, height, true, flipMode);
         }
 
-		public static Bitmap PrepareColourBitmapForDisplay(int[, ,] imageArray, int width, int height)
+		public static Bitmap PrepareColourBitmapForDisplay(int[, ,] imageArray, int width, int height, FlipMode flipMode)
 		{
-			return PrepareColourBitmapForDisplay(imageArray, width, height, false);
+			return PrepareColourBitmapForDisplay(imageArray, width, height, false, flipMode);
 		}
 
-		public static Bitmap PrepareColourBitmapForDisplay(object[, ,] imageArray, int width, int height)
+		public static Bitmap PrepareColourBitmapForDisplay(object[, ,] imageArray, int width, int height, FlipMode flipMode)
 		{
-			return PrepareColourBitmapForDisplay(imageArray, width, height, true);
+			return PrepareColourBitmapForDisplay(imageArray, width, height, true, flipMode);
 		}
 
-		public static object GetMonochromePixelsFromBitmap(Bitmap bitmap, LumaConversionMode conversionMode)
+		public static object GetMonochromePixelsFromBitmap(Bitmap bitmap, LumaConversionMode conversionMode, FlipMode flipMode)
 		{
 			int[,] bitmapBytes = new int[bitmap.Width, bitmap.Height];
 
 			IntPtr hBitmap = bitmap.GetHbitmap();
 			try
 			{
-				GetMonochromePixelsFromBitmap(bitmap.Width, bitmap.Height, 8, hBitmap, bitmapBytes, (int)conversionMode);
+				GetMonochromePixelsFromBitmap(bitmap.Width, bitmap.Height, 8, flipMode, hBitmap, bitmapBytes, (int)conversionMode);
 			}
 			finally
 			{
@@ -147,14 +159,14 @@ namespace ASCOM.Utilities.Video
 			return bitmapBytes;
 		}
 
-		public static object GetColourPixelsFromBitmap(Bitmap bitmap)
+		public static object GetColourPixelsFromBitmap(Bitmap bitmap, FlipMode flipMode)
 		{
 			int[,,] bitmapBytes = new int[bitmap.Width, bitmap.Height, 3];
 
 			IntPtr hBitmap = bitmap.GetHbitmap();
 			try
 			{
-				GetColourPixelsFromBitmap(bitmap.Width, bitmap.Height, 8, hBitmap, bitmapBytes);
+				GetColourPixelsFromBitmap(bitmap.Width, bitmap.Height, 8, flipMode, hBitmap, bitmapBytes);
 			}
 			finally
 			{
@@ -164,7 +176,7 @@ namespace ASCOM.Utilities.Video
 			return bitmapBytes;			
 		}
 
-	    private static Bitmap PrepareBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels)
+		private static Bitmap PrepareBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels, FlipMode flipMode)
 		{
 			Bitmap displayBitmap = null;
 
@@ -183,7 +195,7 @@ namespace ASCOM.Utilities.Video
 
 			byte[] rawBitmapBytes = new byte[(width * height * 3) + 40 + 14 + 1];
 
-            GetBitmapPixels(width, height, (int)8, pixels, rawBitmapBytes);
+			GetBitmapPixels(width, height, (int)8, flipMode, pixels, rawBitmapBytes);
 
 			using (MemoryStream memStr = new MemoryStream(rawBitmapBytes))
 			{
@@ -193,7 +205,7 @@ namespace ASCOM.Utilities.Video
 			return displayBitmap;
 		}
 
-		private static Bitmap PrepareColourBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels)
+		private static Bitmap PrepareColourBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels, FlipMode flipMode)
 		{
 			Bitmap displayBitmap = null;
 
@@ -212,7 +224,7 @@ namespace ASCOM.Utilities.Video
 
 			byte[] rawBitmapBytes = new byte[(width * height * 3) + 40 + 14 + 1];
 
-			GetColourBitmapPixels(width, height, (int)8, pixels, rawBitmapBytes);
+			GetColourBitmapPixels(width, height, (int)8, flipMode, pixels, rawBitmapBytes);
 
 			using (MemoryStream memStr = new MemoryStream(rawBitmapBytes))
 			{

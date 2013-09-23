@@ -32,6 +32,8 @@ namespace ASCOM.Utilities.Video
         IntPtr GetDisplayHBitmap();
         Bitmap GetDisplayBitmap();
 	    object GetImageArray(Bitmap bmp, SensorType sensorType, LumaConversionMode conversionMode);
+		bool FlipHorizontaly { get; set; }
+		bool FlipVertically { get; set; }
     }
 
     [ComVisible(true)]
@@ -119,21 +121,37 @@ namespace ASCOM.Utilities.Video
             return hBitmap;
         }
 
-        public Bitmap GetDisplayBitmap()
+		public bool FlipHorizontaly { get; set; }
+
+		public bool FlipVertically { get; set; }
+
+		private FlipMode GetFlipMode()
+		{
+			if (FlipHorizontaly && FlipVertically)
+				return FlipMode.FlipBoth;
+			else if (FlipHorizontaly)
+				return FlipMode.FlipHorizontally;
+			else if (FlipVertically)
+				return FlipMode.FlipVertically;
+			else
+				return FlipMode.None;
+		}
+
+	    public Bitmap GetDisplayBitmap()
         {
 			if (sensorType == SensorType.Monochrome)
 			{
 				if (intPixelArray != null)
-					return NativeHelpers.PrepareBitmapForDisplay(intPixelArray, imageWidth, imageHeight);
+					return NativeHelpers.PrepareBitmapForDisplay(intPixelArray, imageWidth, imageHeight, GetFlipMode());
 				else if (objPixelArray != null)
-					return NativeHelpers.PrepareBitmapForDisplay(objPixelArray, imageWidth, imageHeight);				
+					return NativeHelpers.PrepareBitmapForDisplay(objPixelArray, imageWidth, imageHeight, GetFlipMode());				
 			}
 			else if (sensorType == SensorType.Color)
 			{
 				if (intColourPixelArray != null)
-					return NativeHelpers.PrepareColourBitmapForDisplay(intColourPixelArray, imageWidth, imageHeight);
+					return NativeHelpers.PrepareColourBitmapForDisplay(intColourPixelArray, imageWidth, imageHeight, GetFlipMode());
 				else if (objColourPixelArray != null)
-					return NativeHelpers.PrepareColourBitmapForDisplay(objColourPixelArray, imageWidth, imageHeight);
+					return NativeHelpers.PrepareColourBitmapForDisplay(objColourPixelArray, imageWidth, imageHeight, GetFlipMode());
 			}
 
             return null;
@@ -193,9 +211,9 @@ namespace ASCOM.Utilities.Video
 			this.imageHeight = bmp.Height;
 
 			if (sensorType == SensorType.Monochrome)
-				return NativeHelpers.GetMonochromePixelsFromBitmap(bmp, conversionMode);
+				return NativeHelpers.GetMonochromePixelsFromBitmap(bmp, conversionMode, GetFlipMode());
 			else if (sensorType == SensorType.Color)
-				return NativeHelpers.GetColourPixelsFromBitmap(bmp);
+				return NativeHelpers.GetColourPixelsFromBitmap(bmp, GetFlipMode());
 			else
 				throw new NotSupportedException(string.Format("Sensor type {0} is not currently supported.", sensorType));
 		}
