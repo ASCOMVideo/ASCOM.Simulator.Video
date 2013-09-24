@@ -222,7 +222,7 @@ namespace ASCOM.Simulator
 		/// <exception cref="T:ASCOM.DriverException">Must throw an exception if the call was not successful</exception>
 		public void SetupDialog()
 		{
-			using (frmSetupDialog setupDlg = new frmSetupDialog())
+			using (var setupDlg = new frmSetupDialog())
 			{
 				Form ownerForm = Application.OpenForms
 					.Cast<Form>()

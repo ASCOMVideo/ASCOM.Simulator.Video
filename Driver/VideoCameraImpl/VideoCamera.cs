@@ -265,6 +265,8 @@ namespace Simulator.VideoCameraImpl
 			if (selectedDiscreteGammaIndex != -1)
 			{
 				freeRangeGammaValue = short.MinValue;
+				double gammaVal = GetCurrentGammaValue();
+				AviTools.SetNewGamma(gammaVal);
 			}
 		}
 

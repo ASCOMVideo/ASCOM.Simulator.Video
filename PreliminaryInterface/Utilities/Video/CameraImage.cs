@@ -153,6 +153,8 @@ namespace ASCOM.Utilities.Video
 				else if (objColourPixelArray != null)
 					return NativeHelpers.PrepareColourBitmapForDisplay(objColourPixelArray, imageWidth, imageHeight, GetFlipMode());
 			}
+			else
+				throw new NotSupportedException(string.Format("Sensor type {0} is not currently supported.", sensorType));
 
             return null;
         }

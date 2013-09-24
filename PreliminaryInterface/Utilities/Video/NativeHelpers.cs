@@ -23,14 +23,14 @@ using ASCOM.DeviceInterface.DirectShowVideo;
 
 namespace ASCOM.Utilities.Video
 {
-    public class VideoNativeException : Exception
+	internal class VideoNativeException : Exception
     {
         public VideoNativeException(string message)
             : base(message)
         { }
     }
 
-	public enum FlipMode
+	internal enum FlipMode
 	{
 		None = 0,
 		FlipHorizontally = 1,
@@ -122,27 +122,27 @@ namespace ASCOM.Utilities.Video
 		public static extern bool DeleteObject(IntPtr hObject);
 
 
-		public static Bitmap PrepareBitmapForDisplay(int[,] imageArray, int width, int height, FlipMode flipMode)
+		internal static Bitmap PrepareBitmapForDisplay(int[,] imageArray, int width, int height, FlipMode flipMode)
         {
 			return PrepareBitmapForDisplay(imageArray, width, height, false, flipMode);
         }
 
-		public static Bitmap PrepareBitmapForDisplay(object[,] imageArray, int width, int height, FlipMode flipMode)
+		internal static Bitmap PrepareBitmapForDisplay(object[,] imageArray, int width, int height, FlipMode flipMode)
         {
 			return PrepareBitmapForDisplay(imageArray, width, height, true, flipMode);
         }
 
-		public static Bitmap PrepareColourBitmapForDisplay(int[, ,] imageArray, int width, int height, FlipMode flipMode)
+		internal static Bitmap PrepareColourBitmapForDisplay(int[, ,] imageArray, int width, int height, FlipMode flipMode)
 		{
 			return PrepareColourBitmapForDisplay(imageArray, width, height, false, flipMode);
 		}
 
-		public static Bitmap PrepareColourBitmapForDisplay(object[, ,] imageArray, int width, int height, FlipMode flipMode)
+		internal static Bitmap PrepareColourBitmapForDisplay(object[, ,] imageArray, int width, int height, FlipMode flipMode)
 		{
 			return PrepareColourBitmapForDisplay(imageArray, width, height, true, flipMode);
 		}
 
-		public static object GetMonochromePixelsFromBitmap(Bitmap bitmap, LumaConversionMode conversionMode, FlipMode flipMode)
+		internal static object GetMonochromePixelsFromBitmap(Bitmap bitmap, LumaConversionMode conversionMode, FlipMode flipMode)
 		{
 			int[,] bitmapBytes = new int[bitmap.Width, bitmap.Height];
 
@@ -159,7 +159,7 @@ namespace ASCOM.Utilities.Video
 			return bitmapBytes;
 		}
 
-		public static object GetColourPixelsFromBitmap(Bitmap bitmap, FlipMode flipMode)
+		internal static object GetColourPixelsFromBitmap(Bitmap bitmap, FlipMode flipMode)
 		{
 			int[,,] bitmapBytes = new int[bitmap.Width, bitmap.Height, 3];
 
@@ -226,7 +226,7 @@ namespace ASCOM.Utilities.Video
 
 			GetColourBitmapPixels(width, height, (int)8, flipMode, pixels, rawBitmapBytes);
 
-			using (MemoryStream memStr = new MemoryStream(rawBitmapBytes))
+			using (var memStr = new MemoryStream(rawBitmapBytes))
 			{
 				displayBitmap = (Bitmap)Image.FromStream(memStr);
 			}

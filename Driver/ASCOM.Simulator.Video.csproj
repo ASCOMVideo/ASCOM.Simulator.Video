@@ -118,6 +118,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ISettingsPagesManager.cs" />
+    <Compile Include="Config\SettingsPannel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucAnalogueCameraSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucAnalogueCameraSettings.Designer.cs">
+      <DependentUpon>ucAnalogueCameraSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ucGain.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucGain.Designer.cs">
+      <DependentUpon>ucGain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ucGamma.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucGamma.Designer.cs">
+      <DependentUpon>ucGamma.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ucGeneral.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucGeneral.Designer.cs">
+      <DependentUpon>ucGeneral.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ucIntegratingCameraSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucIntegratingCameraSettings.Designer.cs">
+      <DependentUpon>ucIntegratingCameraSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\ucVideoSource.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Config\ucVideoSource.Designer.cs">
+      <DependentUpon>ucVideoSource.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmImageSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,6 +203,24 @@
     <Compile Include="VideoFrame.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Config\ucAnalogueCameraSettings.resx">
+      <DependentUpon>ucAnalogueCameraSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Config\ucGain.resx">
+      <DependentUpon>ucGain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Config\ucGamma.resx">
+      <DependentUpon>ucGamma.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Config\ucGeneral.resx">
+      <DependentUpon>ucGeneral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Config\ucIntegratingCameraSettings.resx">
+      <DependentUpon>ucIntegratingCameraSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Config\ucVideoSource.resx">
+      <DependentUpon>ucVideoSource.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmImageSettings.resx">
       <DependentUpon>frmImageSettings.cs</DependentUpon>
     </EmbeddedResource>

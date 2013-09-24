@@ -122,6 +122,12 @@
     <Compile Include="DeviceInterface\DirectShowVideo\frmSetupDialog.designer.cs">
       <DependentUpon>frmSetupDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\ucDirectShowVideoSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\ucDirectShowVideoSettings.Designer.cs">
+      <DependentUpon>ucDirectShowVideoSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\CrossbarHelper.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -175,6 +181,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DeviceInterface\DirectShowVideo\frmSetupDialog.resx">
       <DependentUpon>frmSetupDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DeviceInterface\DirectShowVideo\ucDirectShowVideoSettings.resx">
+      <DependentUpon>ucDirectShowVideoSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
