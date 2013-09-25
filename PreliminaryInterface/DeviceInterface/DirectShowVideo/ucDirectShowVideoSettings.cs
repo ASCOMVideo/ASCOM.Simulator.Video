@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using ASCOM.DeviceInterface.DirectShowVideo;
 using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using DirectShowLib;
@@ -200,6 +201,33 @@ namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo
 						cbxCrossbarInput.SelectedIndexChanged += new EventHandler(cbxCrossbarInput_SelectedIndexChanged);
 						Cursor = Cursors.Default;
 					}
+
+					cbxVideoFormats.Items.Clear();
+					cbxVideoFormats.SelectedIndexChanged -= new EventHandler(cbxVideoFormats_SelectedIndexChanged);
+					try
+					{
+						VideoFormatHelper.LoadSupportedVideoFormats(deviceName, cbxVideoFormats);
+					}
+					finally
+					{
+						cbxVideoFormats.SelectedIndexChanged += new EventHandler(cbxVideoFormats_SelectedIndexChanged);
+						Cursor = Cursors.Default;
+					}
+
+					VideoFormatHelper.SupportedVideoFormat selectedVideoFormat = null;
+					foreach (VideoFormatHelper.SupportedVideoFormat format in cbxVideoFormats.Items)
+					{
+						if (settings.SelectedVideoFormat == format.AsSerialized())
+						{
+							selectedVideoFormat = format;
+							break;
+						}
+					}
+
+					if (selectedVideoFormat != null)
+						cbxVideoFormats.SelectedItem = selectedVideoFormat;
+					else
+						cbxVideoFormats.SelectedIndex = 0;
 				}
 			}
 		}
@@ -258,6 +286,12 @@ namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo
 		{
 			btnInputPros.Enabled = true;
 			btnCompressorProps.Enabled = true;
+		}
+
+		private void cbxVideoFormats_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			var selectedFormat = (VideoFormatHelper.SupportedVideoFormat)cbxVideoFormats.SelectedItem;
+			settings.SelectedVideoFormat = selectedFormat.AsSerialized();
 		}
 
 	}

@@ -114,5 +114,19 @@ namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo
 			}
 		}
 
+		[global::System.Configuration.UserScopedSettingAttribute()]
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		[global::System.Configuration.DefaultSettingValueAttribute("")]
+		public string SelectedVideoFormat
+		{
+			get
+			{
+				return ((string)(this["SelectedVideoFormat"]));
+			}
+			set
+			{
+				this["SelectedVideoFormat"] = value;
+			}
+		}
 	}
 }

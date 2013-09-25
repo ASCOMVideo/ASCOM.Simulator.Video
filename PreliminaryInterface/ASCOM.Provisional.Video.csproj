@@ -143,6 +143,7 @@
     <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\VideoCodecs.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\VideoFormatHelper.cs" />
     <Compile Include="DeviceInterface\DirectShowVideo\VideoFrame.cs">
       <SubType>Code</SubType>
     </Compile>

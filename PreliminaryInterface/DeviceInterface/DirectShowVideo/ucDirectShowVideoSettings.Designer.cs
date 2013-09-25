@@ -40,15 +40,19 @@
 			this.rbCompressionDV = new System.Windows.Forms.RadioButton();
 			this.rbCompressionUncompressed = new System.Windows.Forms.RadioButton();
 			this.btnCompressorProps = new System.Windows.Forms.Button();
-			this.pnlBWPixels = new System.Windows.Forms.Panel();
-			this.label3 = new System.Windows.Forms.Label();
-			this.cbxMonochromePixelsFrom = new System.Windows.Forms.ComboBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.cbxSensorType = new System.Windows.Forms.ComboBox();
 			this.btnInputPros = new System.Windows.Forms.Button();
 			this.cbxCaptureDevices = new System.Windows.Forms.ComboBox();
 			this.label8 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.cbxVideoFormats = new System.Windows.Forms.ComboBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.cbxSensorType = new System.Windows.Forms.ComboBox();
+			this.pnlBWPixels = new System.Windows.Forms.Panel();
+			this.label3 = new System.Windows.Forms.Label();
+			this.cbxMonochromePixelsFrom = new System.Windows.Forms.ComboBox();
 			this.gbxCompression.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.pnlBWPixels.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -60,7 +64,7 @@
             "Automatic"});
 			this.cbxCrossbarInput.Location = new System.Drawing.Point(7, 66);
 			this.cbxCrossbarInput.Name = "cbxCrossbarInput";
-			this.cbxCrossbarInput.Size = new System.Drawing.Size(275, 21);
+			this.cbxCrossbarInput.Size = new System.Drawing.Size(220, 21);
 			this.cbxCrossbarInput.TabIndex = 41;
 			this.cbxCrossbarInput.SelectedIndexChanged += new System.EventHandler(this.cbxCrossbarInput_SelectedIndexChanged);
 			// 
@@ -180,61 +184,16 @@
 			// 
 			this.btnCompressorProps.Location = new System.Drawing.Point(343, 116);
 			this.btnCompressorProps.Name = "btnCompressorProps";
-			this.btnCompressorProps.Size = new System.Drawing.Size(120, 43);
+			this.btnCompressorProps.Size = new System.Drawing.Size(117, 43);
 			this.btnCompressorProps.TabIndex = 23;
 			this.btnCompressorProps.Text = "Codec properties";
 			this.btnCompressorProps.Click += new System.EventHandler(this.btnCompressorProps_Click);
 			// 
-			// pnlBWPixels
-			// 
-			this.pnlBWPixels.Controls.Add(this.label3);
-			this.pnlBWPixels.Controls.Add(this.cbxMonochromePixelsFrom);
-			this.pnlBWPixels.Location = new System.Drawing.Point(282, 97);
-			this.pnlBWPixels.Name = "pnlBWPixels";
-			this.pnlBWPixels.Size = new System.Drawing.Size(192, 48);
-			this.pnlBWPixels.TabIndex = 38;
-			this.pnlBWPixels.Visible = false;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(3, 0);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(137, 13);
-			this.label3.TabIndex = 28;
-			this.label3.Text = "Monochrome Pixels From ...";
-			// 
-			// cbxMonochromePixelsFrom
-			// 
-			this.cbxMonochromePixelsFrom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbxMonochromePixelsFrom.Location = new System.Drawing.Point(6, 16);
-			this.cbxMonochromePixelsFrom.Name = "cbxMonochromePixelsFrom";
-			this.cbxMonochromePixelsFrom.Size = new System.Drawing.Size(182, 21);
-			this.cbxMonochromePixelsFrom.TabIndex = 27;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(4, 97);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(116, 13);
-			this.label2.TabIndex = 37;
-			this.label2.Text = "Simulated Sensor Type";
-			// 
-			// cbxSensorType
-			// 
-			this.cbxSensorType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbxSensorType.Location = new System.Drawing.Point(7, 113);
-			this.cbxSensorType.Name = "cbxSensorType";
-			this.cbxSensorType.Size = new System.Drawing.Size(274, 21);
-			this.cbxSensorType.TabIndex = 36;
-			this.cbxSensorType.SelectedIndexChanged += new System.EventHandler(this.cbSensorType_SelectedIndexChanged);
-			// 
 			// btnInputPros
 			// 
-			this.btnInputPros.Location = new System.Drawing.Point(288, 18);
+			this.btnInputPros.Location = new System.Drawing.Point(249, 18);
 			this.btnInputPros.Name = "btnInputPros";
-			this.btnInputPros.Size = new System.Drawing.Size(119, 24);
+			this.btnInputPros.Size = new System.Drawing.Size(133, 24);
 			this.btnInputPros.TabIndex = 35;
 			this.btnInputPros.Text = "Show property pages";
 			this.btnInputPros.Click += new System.EventHandler(this.btnInputPros_Click);
@@ -244,7 +203,7 @@
 			this.cbxCaptureDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbxCaptureDevices.Location = new System.Drawing.Point(6, 21);
 			this.cbxCaptureDevices.Name = "cbxCaptureDevices";
-			this.cbxCaptureDevices.Size = new System.Drawing.Size(275, 21);
+			this.cbxCaptureDevices.Size = new System.Drawing.Size(221, 21);
 			this.cbxCaptureDevices.TabIndex = 34;
 			this.cbxCaptureDevices.SelectedIndexChanged += new System.EventHandler(this.cbxCaptureDevices_SelectedIndexChanged);
 			// 
@@ -257,16 +216,92 @@
 			this.label8.TabIndex = 33;
 			this.label8.Text = "Video Input";
 			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(4, 97);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(166, 13);
+			this.label6.TabIndex = 43;
+			this.label6.Text = "Video Resolution and Frame Rate";
+			// 
+			// cbxVideoFormats
+			// 
+			this.cbxVideoFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxVideoFormats.FormattingEnabled = true;
+			this.cbxVideoFormats.Location = new System.Drawing.Point(7, 115);
+			this.cbxVideoFormats.Name = "cbxVideoFormats";
+			this.cbxVideoFormats.Size = new System.Drawing.Size(220, 21);
+			this.cbxVideoFormats.TabIndex = 42;
+			this.cbxVideoFormats.SelectedIndexChanged += new System.EventHandler(this.cbxVideoFormats_SelectedIndexChanged);
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.pnlBWPixels);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.cbxSensorType);
+			this.groupBox1.Location = new System.Drawing.Point(245, 57);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(230, 84);
+			this.groupBox1.TabIndex = 44;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "ImageArray Format";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(9, 27);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(67, 13);
+			this.label2.TabIndex = 39;
+			this.label2.Text = "Sensor Type";
+			// 
+			// cbxSensorType
+			// 
+			this.cbxSensorType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxSensorType.Location = new System.Drawing.Point(82, 24);
+			this.cbxSensorType.Name = "cbxSensorType";
+			this.cbxSensorType.Size = new System.Drawing.Size(140, 21);
+			this.cbxSensorType.TabIndex = 38;
+			this.cbxSensorType.SelectedIndexChanged += new System.EventHandler(this.cbSensorType_SelectedIndexChanged);
+			// 
+			// pnlBWPixels
+			// 
+			this.pnlBWPixels.Controls.Add(this.label3);
+			this.pnlBWPixels.Controls.Add(this.cbxMonochromePixelsFrom);
+			this.pnlBWPixels.Location = new System.Drawing.Point(6, 50);
+			this.pnlBWPixels.Name = "pnlBWPixels";
+			this.pnlBWPixels.Size = new System.Drawing.Size(218, 27);
+			this.pnlBWPixels.TabIndex = 40;
+			this.pnlBWPixels.Visible = false;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(3, 9);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(33, 13);
+			this.label3.TabIndex = 28;
+			this.label3.Text = "Luma";
+			// 
+			// cbxMonochromePixelsFrom
+			// 
+			this.cbxMonochromePixelsFrom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxMonochromePixelsFrom.Location = new System.Drawing.Point(76, 3);
+			this.cbxMonochromePixelsFrom.Name = "cbxMonochromePixelsFrom";
+			this.cbxMonochromePixelsFrom.Size = new System.Drawing.Size(140, 21);
+			this.cbxMonochromePixelsFrom.TabIndex = 27;
+			// 
 			// ucDirectShowVideoSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.cbxVideoFormats);
 			this.Controls.Add(this.cbxCrossbarInput);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.gbxCompression);
-			this.Controls.Add(this.pnlBWPixels);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.cbxSensorType);
 			this.Controls.Add(this.btnInputPros);
 			this.Controls.Add(this.cbxCaptureDevices);
 			this.Controls.Add(this.label8);
@@ -275,6 +310,8 @@
 			this.Load += new System.EventHandler(this.ucDirectShowVideoSettings_Load);
 			this.gbxCompression.ResumeLayout(false);
 			this.gbxCompression.PerformLayout();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.pnlBWPixels.ResumeLayout(false);
 			this.pnlBWPixels.PerformLayout();
 			this.ResumeLayout(false);
@@ -296,13 +333,16 @@
 		private System.Windows.Forms.RadioButton rbCompressionDV;
 		private System.Windows.Forms.RadioButton rbCompressionUncompressed;
 		private System.Windows.Forms.Button btnCompressorProps;
+		private System.Windows.Forms.Button btnInputPros;
+		private System.Windows.Forms.ComboBox cbxCaptureDevices;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.ComboBox cbxVideoFormats;
+		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Panel pnlBWPixels;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox cbxMonochromePixelsFrom;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox cbxSensorType;
-		private System.Windows.Forms.Button btnInputPros;
-		private System.Windows.Forms.ComboBox cbxCaptureDevices;
-		private System.Windows.Forms.Label label8;
 	}
 }

@@ -27,6 +27,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
+using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using DirectShowLib;
 
 namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
@@ -82,11 +83,11 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			crossbarHelper = new CrossbarHelper(settings);
 		}
 
-		public void SetupFileRecorderGraph(DsDevice dev, SystemCodecEntry compressor, ref float iFrameRate, ref int iWidth, ref int iHeight, string fileName)
+		public void SetupFileRecorderGraph(DsDevice dev, SystemCodecEntry compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, ref float iFrameRate, ref int iWidth, ref int iHeight, string fileName)
 		{
 			try
 			{
-				SetupGraphInternal(dev, compressor, ref iFrameRate, ref iWidth, ref iHeight, fileName);
+				SetupGraphInternal(dev, compressor, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight, fileName);
 
 				latestBitmap = new Bitmap(iWidth, iHeight, PixelFormat.Format24bppRgb);
 				fullRect = new Rectangle(0, 0, latestBitmap.Width, latestBitmap.Height);
@@ -98,11 +99,11 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			} 
 		}
 
-		public void SetupPreviewOnlyGraph(DsDevice dev, ref float iFrameRate, ref int iWidth, ref int iHeight)
+		public void SetupPreviewOnlyGraph(DsDevice dev, VideoFormatHelper.SupportedVideoFormat selectedFormat, ref float iFrameRate, ref int iWidth, ref int iHeight)
 		{
 			try
 			{
-				SetupGraphInternal(dev, null, ref iFrameRate, ref iWidth, ref iHeight, null);
+				SetupGraphInternal(dev, null, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight, null);
 
 				latestBitmap = new Bitmap(iWidth, iHeight, PixelFormat.Format24bppRgb);
 				fullRect = new Rectangle(0, 0, latestBitmap.Width, latestBitmap.Height);
@@ -182,7 +183,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			return (IBaseFilter)source;
 		}
 
-		private void SetupGraphInternal(DsDevice dev, SystemCodecEntry compressor, ref float iFrameRate, ref int iWidth, ref int iHeight, string fileName)
+		private void SetupGraphInternal(DsDevice dev, SystemCodecEntry compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, ref float iFrameRate, ref int iWidth, ref int iHeight, string fileName)
 		{
 			filterGraph = (IFilterGraph2)new FilterGraph();
 			mediaCtrl = filterGraph as IMediaControl;
@@ -205,27 +206,23 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			{
 				if (compressor.Codec == SupportedCodec.Uncompressed || compressor.Codec == SupportedCodec.DV)
 				{
-					deviceFilter = BuildFileCaptureGraph_UncompressedOrDV(dev, compressor.Device, fileName);
+					deviceFilter = BuildFileCaptureGraph_UncompressedOrDV(dev, compressor.Device, selectedFormat, fileName, ref iFrameRate, ref iWidth, ref iHeight);
 				}
                 else if (compressor.Codec == SupportedCodec.XviD || compressor.Codec == SupportedCodec.HuffYuv211 || compressor.Codec == SupportedCodec.Unsupported)
 				{
-					deviceFilter = BuildFileCaptureGraph_WithCodec(dev, compressor.Device, fileName);
+					deviceFilter = BuildFileCaptureGraph_WithCodec(dev, compressor.Device, selectedFormat, fileName, ref iFrameRate, ref iWidth, ref iHeight);
 				}
 			}
 			else
 			{
-				deviceFilter = BuildPreviewOnlyCaptureGraph(dev);
+				deviceFilter = BuildPreviewOnlyCaptureGraph(dev, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight);
 			}
-
-			if (deviceFilter != null)
-				// If any of the default config items are set
-				SetConfigParms(capBuilder, deviceFilter, ref iFrameRate, ref iWidth, ref iHeight);
 
 			// Now that sizes are fixed/known, store the sizes
 			SaveSizeInfo(samplGrabber);
 		}
 
-		private IBaseFilter BuildPreviewOnlyCaptureGraph(DsDevice dev)
+		private IBaseFilter BuildPreviewOnlyCaptureGraph(DsDevice dev, VideoFormatHelper.SupportedVideoFormat selectedFormat, ref float iFrameRate, ref int iWidth, ref int iHeight)
 		{
 			IBaseFilter muxFilter = null;
 
@@ -236,6 +233,9 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 				// Add the video device
 				int hr = filterGraph.AddSourceFilterForMoniker(dev.Mon, null, dev.Name, out capFilter);
 				DsError.ThrowExceptionForHR(hr);
+
+				if (capFilter != null)
+					SetConfigParms(capBuilder, capFilter, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight);
 
 				IBaseFilter baseGrabFlt = (IBaseFilter)samplGrabber;
 				ConfigureSampleGrabber(samplGrabber);
@@ -264,7 +264,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		}
 
 
-		private IBaseFilter BuildFileCaptureGraph_UncompressedOrDV(DsDevice dev, DsDevice compressor, string fileName)
+		private IBaseFilter BuildFileCaptureGraph_UncompressedOrDV(DsDevice dev, DsDevice compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, string fileName, ref float iFrameRate, ref int iWidth, ref int iHeight)
 		{
 			IBaseFilter compressorFilter = null;
 			IBaseFilter muxFilter = null;
@@ -278,6 +278,9 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 				// Add the Video input device to the graph
 				int hr = filterGraph.AddFilter(capFilter, "ASCOM Video Source");
 				DsError.ThrowExceptionForHR(hr);
+
+				if (capFilter != null)
+					SetConfigParms(capBuilder, capFilter, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight);
 
 				if (compressor != null)
 				{
@@ -335,7 +338,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		private static string SMART_TEE_MONKIER = @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{CC58E280-8AA1-11D1-B3F1-00AA003761C5}";
 		private static string AVI_DECOMPRESSOR_MONKIER = @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{CF49D4E0-1115-11CE-B03A-0020AF0BA770}";
 
-		private IBaseFilter BuildFileCaptureGraph_WithCodec(DsDevice dev, DsDevice compressor, string fileName)
+		private IBaseFilter BuildFileCaptureGraph_WithCodec(DsDevice dev, DsDevice compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, string fileName, ref float iFrameRate, ref int iWidth, ref int iHeight)
 		{
 			// Capture Source (Capture/Video) --> (Input) Smart Tee (Capture) --> (Input) Video Compressor (Output) --> (Input 01/Video/) AVI Mux (Output) --> (In) FileSink
 			//                                                      \
@@ -357,6 +360,9 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 				// Add the video device
 				int hr = filterGraph.AddSourceFilterForMoniker(dev.Mon, null, dev.Name, out capFilter);
 				DsError.ThrowExceptionForHR(hr);
+
+				if (capFilter != null)
+					SetConfigParms(capBuilder, capFilter, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight);
 
 				IBaseFilter baseGrabFlt = (IBaseFilter)samplGrabber;
 				ConfigureSampleGrabber(samplGrabber);
@@ -536,6 +542,125 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			stride = videoWidth * (videoInfoHeader.BmiHeader.BitCount / 8);
 
 			DsUtils.FreeAMMediaType(media);
+		}
+
+		private void SetConfigParms(ICaptureGraphBuilder2 capBuilder, IBaseFilter capFilter, VideoFormatHelper.SupportedVideoFormat selectedFormat, ref float iFrameRate, ref int iWidth, ref int iHeight)
+		{
+			object o;
+			IAMStreamConfig videoStreamConfig;
+			IAMVideoControl videoControl = capFilter as IAMVideoControl;
+
+			int hr = capBuilder.FindInterface(PinCategory.Capture, MediaType.Video, capFilter, typeof(IAMStreamConfig).GUID, out o);
+
+			videoStreamConfig = o as IAMStreamConfig;
+			try
+			{
+				if (videoStreamConfig == null)
+				{
+					throw new Exception("Failed to get IAMStreamConfig");
+				}
+
+				int iCount = 0, iSize = 0;
+				hr = videoStreamConfig.GetNumberOfCapabilities(out iCount, out iSize);
+				DsError.ThrowExceptionForHR(hr);
+
+				VideoInfoHeader vMatching = null;
+				VideoFormatHelper.SupportedVideoFormat entry = null;
+
+				IntPtr taskMemPointer = Marshal.AllocCoTaskMem(iSize);
+
+				AMMediaType pmtConfig = null;
+				for (int iFormat = 0; iFormat < iCount; iFormat++)
+				{
+					IntPtr ptr = IntPtr.Zero;
+
+					hr = videoStreamConfig.GetStreamCaps(iFormat, out pmtConfig, taskMemPointer);
+					DsError.ThrowExceptionForHR(hr);
+
+					vMatching = (VideoInfoHeader)Marshal.PtrToStructure(pmtConfig.formatPtr, typeof(VideoInfoHeader));
+
+					if (vMatching.BmiHeader.BitCount > 0)
+					{
+						entry = new VideoFormatHelper.SupportedVideoFormat()
+						{
+							Width = vMatching.BmiHeader.Width,
+							Height = vMatching.BmiHeader.Height,
+							BitCount = vMatching.BmiHeader.BitCount,
+							FrameRate = 10000000.0 / vMatching.AvgTimePerFrame
+						};
+
+						if (entry.Matches(selectedFormat))
+						{
+							// WE FOUND IT !!!
+							break;
+						}
+					}
+
+					vMatching = null;
+				}
+
+				if (vMatching != null)
+				{
+					hr = videoStreamConfig.SetFormat(pmtConfig);
+					DsError.ThrowExceptionForHR(hr);
+
+					iFrameRate = 10000000 / vMatching.AvgTimePerFrame;
+					iWidth = vMatching.BmiHeader.Width;
+					iHeight = vMatching.BmiHeader.Height;
+				}
+				else
+				{
+					AMMediaType media;
+					hr = videoStreamConfig.GetFormat(out media);
+					DsError.ThrowExceptionForHR(hr);
+
+					// Copy out the videoinfoheader
+					VideoInfoHeader v = new VideoInfoHeader();
+					Marshal.PtrToStructure(media.formatPtr, v);
+
+					// If overriding the framerate, set the frame rate
+					if (iFrameRate > 0)
+					{
+						v.AvgTimePerFrame = (int)Math.Round(10000000 / iFrameRate);
+					}
+					else
+						iFrameRate = 10000000 / v.AvgTimePerFrame;
+
+					// If overriding the width, set the width
+					if (iWidth > 0)
+					{
+						v.BmiHeader.Width = iWidth;
+					}
+					else
+						iWidth = v.BmiHeader.Width;
+
+					// If overriding the Height, set the Height
+					if (iHeight > 0)
+					{
+						v.BmiHeader.Height = iHeight;
+					}
+					else
+						iHeight = v.BmiHeader.Height;
+
+					// Copy the media structure back
+					Marshal.StructureToPtr(v, media.formatPtr, false);
+
+					// Set the new format
+					hr = videoStreamConfig.SetFormat(media);
+					DsError.ThrowExceptionForHR(hr);
+
+					DsUtils.FreeAMMediaType(media);
+					media = null;
+				}
+
+				Marshal.FreeCoTaskMem(taskMemPointer);
+				DsUtils.FreeAMMediaType(pmtConfig);
+				pmtConfig = null;
+			}
+			finally
+			{
+				Marshal.ReleaseComObject(videoStreamConfig);
+			}
 		}
 
 		private void SetConfigParms(ICaptureGraphBuilder2 capBuilder, IBaseFilter capFilter, ref float iFrameRate, ref int iWidth, ref int iHeight)

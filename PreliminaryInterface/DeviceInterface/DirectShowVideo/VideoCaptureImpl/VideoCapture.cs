@@ -29,6 +29,7 @@ using ASCOM.DeviceInterface;
 using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
 using ASCOM.Utilities.Video;
 using DirectShowLib;
+using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 
 namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 {
@@ -48,7 +49,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		public void Initialize(DirectShowVideoSettings settings)
 		{
 			this.settings = settings;
-			dsCapture = new DirectShowCapture(settings);			
+			dsCapture = new DirectShowCapture(settings);
 		}
 
 		private ICameraImage cameraImageHelper = new CameraImage();
@@ -106,7 +107,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 
 				// TODO: Set a preferred frameRate and image size stored in the configuration
 
-				dsCapture.SetupPreviewOnlyGraph(videoInputDevice, ref frameRate, ref imageWidth, ref imageHeight);
+				dsCapture.SetupPreviewOnlyGraph(videoInputDevice, new VideoFormatHelper.SupportedVideoFormat(settings.SelectedVideoFormat), ref frameRate, ref imageWidth, ref imageHeight);
 
 				dsCapture.Start();
 
@@ -134,8 +135,8 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 
 				bool reconnect = false;
 
-				if (inputDevice != null && 
-					videoInputDevice != null && 
+				if (inputDevice != null &&
+					videoInputDevice != null &&
 					videoInputDevice.DevicePath != inputDevice.DevicePath)
 				{
 					// We have a new video device. Will need to reconnect to it
@@ -192,18 +193,21 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 					case VideoFrameLayout.BayerRGGB:
 						return SensorType.RGGB;
 				}
-				
+
 				throw new ArgumentOutOfRangeException();
 			}
 		}
 
 		public bool GetCurrentFrame(out VideoCameraFrame cameraFrame)
 		{
-			long frameId;
-			Bitmap bmp = dsCapture.GetNextFrame(out frameId);
-
-			if (bmp != null)
+			try
 			{
+				long frameId;
+				Bitmap bmp = dsCapture.GetNextFrame(out frameId);
+
+				if (bmp == null)
+					bmp = new Bitmap(ImageWidth, ImageHeight, PixelFormat.Format24bppRgb);
+
 				using (bmp)
 				{
 					object pixels = cameraImageHelper.GetImageArray(bmp, SimulatedSensorType, settings.LumaConversionMode);
@@ -212,16 +216,30 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 					{
 						FrameNumber = frameId,
 						Pixels = pixels,
-						PreviewBitmap = (Bitmap)bmp.Clone(),
+						PreviewBitmap = GetBitmapForSensorType(bmp, SimulatedSensorType, settings.LumaConversionMode),
 						ImageLayout = settings.SimulatedImageLayout
-					};					
+					};
 				}
 
 				return true;
 			}
+			catch
+			{
+				cameraFrame = null;
+				return false;
+			}
+		}
 
-			cameraFrame = null;
-			return false;
+		private Bitmap GetBitmapForSensorType(Bitmap bmp, SensorType sensorType, LumaConversionMode lumaConversionMode)
+		{
+			if (sensorType == SensorType.Color)
+				return (Bitmap)bmp.Clone();
+			else if (sensorType == SensorType.Monochrome)
+			{
+				return (Bitmap)bmp.Clone();
+			}
+			else
+				throw new NotSupportedException(string.Format("Sensor type {0} is not supported.", sensorType));
 		}
 
 		public VideoCameraState GetCurrentCameraState()
@@ -234,7 +252,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			if (dsCapture.IsRunning)
 				dsCapture.CloseResources();
 
-			dsCapture.SetupFileRecorderGraph(videoInputDevice, videoCompressor, ref frameRate, ref imageWidth, ref imageHeight, preferredFileName);
+			dsCapture.SetupFileRecorderGraph(videoInputDevice, videoCompressor, new VideoFormatHelper.SupportedVideoFormat(settings.SelectedVideoFormat), ref frameRate, ref imageWidth, ref imageHeight, preferredFileName);
 
 			dsCapture.Start();
 
