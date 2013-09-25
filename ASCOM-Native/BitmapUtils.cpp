@@ -254,19 +254,19 @@ HRESULT GetMonochromePixelsFromBitmap(long width, long height, long bpp, long fl
 
 			if (flipMode == 0)
 			{
-				*(pixels + x + width * y ) = pixVal;
+				*(pixels + (width - 1 - x) + width * y ) = pixVal;
 			}
 			else if (flipMode == 1) /* Flip Horizontally */
 			{
-				*(pixels + (width - 1 - x) + width * y ) = pixVal;
+				*(pixels + x + width * y ) = pixVal;
 			}
 			else if (flipMode == 2) /* Flip Vertically */
 			{
-				*(pixels + x + width * (height - 1 - y) ) = pixVal;
+				*(pixels + (width - 1 - x) + width * (height - 1 - y) ) = pixVal;
 			}
 			else if (flipMode == 3) /* Flip Horizontally & Vertically */
 			{
-				*(pixels + (width - 1 - x) + width * (height - 1 - y) ) = pixVal;
+				*(pixels + x + width * (height - 1 - y) ) = pixVal;
 			}
 
 			ptrBuf-=4;
@@ -295,27 +295,28 @@ HRESULT GetColourPixelsFromBitmap(long width, long height, long bpp, long flipMo
 		{
 			if (flipMode == 0)
 			{
-				*(ptrPixelsR + x + width * y ) = *(ptrBuf + 2);
-				*(ptrPixelsG + x + width * y ) = *(ptrBuf + 1);
-				*(ptrPixelsB + x + width * y ) = *(ptrBuf);
-			}
-			else if (flipMode == 1) /* Flip Horizontally */
-			{
 				*(ptrPixelsR + (width - 1 - x) + width * y ) = *(ptrBuf + 2);
 				*(ptrPixelsG + (width - 1 - x) + width * y ) = *(ptrBuf + 1);
 				*(ptrPixelsB + (width - 1 - x) + width * y ) = *(ptrBuf);
 			}
-			else if (flipMode == 2) /* Flip Vertically */
+			else if (flipMode == 1) /* Flip Horizontally */
 			{
-				*(ptrPixelsR + x + width * (height - 1 - y) ) = *(ptrBuf + 2);
-				*(ptrPixelsG + x + width * (height - 1 - y) ) = *(ptrBuf + 1);
-				*(ptrPixelsB + x + width * (height - 1 - y) ) = *(ptrBuf);
+
+				*(ptrPixelsR + x + width * y ) = *(ptrBuf + 2);
+				*(ptrPixelsG + x + width * y ) = *(ptrBuf + 1);
+				*(ptrPixelsB + x + width * y ) = *(ptrBuf);
 			}
-			else if (flipMode == 3) /* Flip Horizontally & Vertically */
+			else if (flipMode == 2) /* Flip Vertically */
 			{
 				*(ptrPixelsR + (width - 1 - x) + width * (height - 1 - y) ) = *(ptrBuf + 2);
 				*(ptrPixelsG + (width - 1 - x) + width * (height - 1 - y) ) = *(ptrBuf + 1);
 				*(ptrPixelsB + (width - 1 - x) + width * (height - 1 - y) ) = *(ptrBuf);
+			}
+			else if (flipMode == 3) /* Flip Horizontally & Vertically */
+			{
+				*(ptrPixelsR + x + width * (height - 1 - y) ) = *(ptrBuf + 2);
+				*(ptrPixelsG + x + width * (height - 1 - y) ) = *(ptrBuf + 1);
+				*(ptrPixelsB + x + width * (height - 1 - y) ) = *(ptrBuf);
 			}
 
 			ptrBuf-=4;

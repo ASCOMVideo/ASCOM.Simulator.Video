@@ -86,11 +86,10 @@ namespace ASCOM.DeviceInterface.Utilities.Video
             return error;
         }
 
-        private static void ThrowLastNativeError()
+        private static void TraceLastNativeError()
         {
             string error = GetLastAviErrorMessage();
-            //throw new VideoNativeException(error);
-            //MessageBox.Show(error, "VideoNativeException", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
             Trace.WriteLine(error, "VideoNativeException");
         }
 
@@ -98,7 +97,7 @@ namespace ASCOM.DeviceInterface.Utilities.Video
         {
             if (NativeHelpers.CreateNewAviFile(fileName, width, height, bpp, fps, showCompressionDialog) != 0)
             {
-                ThrowLastNativeError();
+                TraceLastNativeError();
             }
         }
 
@@ -106,7 +105,7 @@ namespace ASCOM.DeviceInterface.Utilities.Video
         {
             if (NativeHelpers.AviFileAddFrame(pixels) != 0)
             {
-                ThrowLastNativeError();
+                TraceLastNativeError();
             }
         }
 
@@ -114,7 +113,7 @@ namespace ASCOM.DeviceInterface.Utilities.Video
         {
             if (NativeHelpers.AviFileClose() != 0)
             {
-                ThrowLastNativeError();
+                TraceLastNativeError();
             }
         }
 
