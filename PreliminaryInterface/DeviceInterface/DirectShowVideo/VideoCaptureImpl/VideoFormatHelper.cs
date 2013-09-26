@@ -69,11 +69,11 @@ namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 				delegate(SupportedVideoFormat format)
 				{
 					string key = format.ToString();
-					SupportedVideoFormat exusting;
-					allFormatsDict.TryGetValue(key, out exusting);
-					if (exusting != null)
+					SupportedVideoFormat existing;
+					allFormatsDict.TryGetValue(key, out existing);
+					if (existing != null)
 					{
-						if (exusting.BitCount < format.BitCount)
+						if (existing.BitCount < format.BitCount)
 							allFormatsDict[key] = format;
 					}
 					else

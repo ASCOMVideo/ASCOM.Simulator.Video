@@ -203,20 +203,9 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			rot = new DsROTEntry(filterGraph);
 
 			if (fileName != null)
-			{
-				if (compressor.Codec == SupportedCodec.Uncompressed || compressor.Codec == SupportedCodec.DV)
-				{
-					deviceFilter = BuildFileCaptureGraph_UncompressedOrDV(dev, compressor.Device, selectedFormat, fileName, ref iFrameRate, ref iWidth, ref iHeight);
-				}
-                else if (compressor.Codec == SupportedCodec.XviD || compressor.Codec == SupportedCodec.HuffYuv211 || compressor.Codec == SupportedCodec.Unsupported)
-				{
-					deviceFilter = BuildFileCaptureGraph_WithCodec(dev, compressor.Device, selectedFormat, fileName, ref iFrameRate, ref iWidth, ref iHeight);
-				}
-			}
+				deviceFilter = BuildFileCaptureGraph(dev, compressor.Device, selectedFormat, fileName, ref iFrameRate, ref iWidth, ref iHeight);
 			else
-			{
 				deviceFilter = BuildPreviewOnlyCaptureGraph(dev, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight);
-			}
 
 			// Now that sizes are fixed/known, store the sizes
 			SaveSizeInfo(samplGrabber);
@@ -224,11 +213,13 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 
 		private IBaseFilter BuildPreviewOnlyCaptureGraph(DsDevice dev, VideoFormatHelper.SupportedVideoFormat selectedFormat, ref float iFrameRate, ref int iWidth, ref int iHeight)
 		{
-			IBaseFilter muxFilter = null;
+			// Capture Source (Capture/Video) --> (Input) Sample Grabber (Output) --> (In) Null Renderer
+
+			IBaseFilter nullRenderer = null;
 
 			try
 			{
-				IBaseFilter capFilter = null;
+				IBaseFilter capFilter;
 
 				// Add the video device
 				int hr = filterGraph.AddSourceFilterForMoniker(dev.Mon, null, dev.Name, out capFilter);
@@ -240,117 +231,45 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 				IBaseFilter baseGrabFlt = (IBaseFilter)samplGrabber;
 				ConfigureSampleGrabber(samplGrabber);
 
-				// Add the frame grabber to the graph
 				hr = filterGraph.AddFilter(baseGrabFlt, "ASCOM Video Grabber");
 				DsError.ThrowExceptionForHR(hr);
 
-
-				// Add the frame grabber to the graph
-				muxFilter = (IBaseFilter)new NullRenderer();
-				hr = filterGraph.AddFilter(muxFilter, "ASCOM Video Null Renderer");
+				// Connect the video device output to the sample grabber
+				IPin videoCaptureOutputPin = FindPin(capFilter, PinDirection.Output, MediaType.Video, PinCategory.Capture, "Capture");				
+				IPin grabberInputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Input, 0);
+				hr = filterGraph.Connect(videoCaptureOutputPin, grabberInputPin);
 				DsError.ThrowExceptionForHR(hr);
-
-				// Connect everything together
-				hr = capBuilder.RenderStream(PinCategory.Preview, MediaType.Video, capFilter, baseGrabFlt, muxFilter);
-				DsError.ThrowExceptionForHR(hr);
-
-				return capFilter;
-			}
-			finally
-			{
-				if (muxFilter != null)
-					Marshal.ReleaseComObject(muxFilter);
-			}
-		}
-
-
-		private IBaseFilter BuildFileCaptureGraph_UncompressedOrDV(DsDevice dev, DsDevice compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, string fileName, ref float iFrameRate, ref int iWidth, ref int iHeight)
-		{
-			IBaseFilter compressorFilter = null;
-			IBaseFilter muxFilter = null;
-			IFileSinkFilter fileWriterFilter = null;
-			IBaseFilter nullRenderer = null;
-
-			try
-			{
-				IBaseFilter capFilter = CreateFilter(FilterCategory.VideoInputDevice, dev.Name);
-
-				// Add the Video input device to the graph
-				int hr = filterGraph.AddFilter(capFilter, "ASCOM Video Source");
-				DsError.ThrowExceptionForHR(hr);
-
-				if (capFilter != null)
-					SetConfigParms(capBuilder, capFilter, selectedFormat, ref iFrameRate, ref iWidth, ref iHeight);
-
-				if (compressor != null)
-				{
-					compressorFilter = CreateFilter(FilterCategory.VideoCompressorCategory, compressor.Name);
-
-					// Add the Video compressor filter to the graph
-					hr = filterGraph.AddFilter(compressorFilter, "ASCOM Video Compressor");
-					DsError.ThrowExceptionForHR(hr);
-				}
-
-				// Create a filter for the output avi file
-				hr = capBuilder.SetOutputFileName(MediaSubType.Avi, fileName, out muxFilter, out fileWriterFilter);
-				DsError.ThrowExceptionForHR(hr);
-
-				IBaseFilter baseGrabFlt = (IBaseFilter)samplGrabber;
-				ConfigureSampleGrabber(samplGrabber);
-
-				// Add the frame grabber to the graph
-				hr = filterGraph.AddFilter(baseGrabFlt, "ASCOM Video Grabber");
-				DsError.ThrowExceptionForHR(hr);
+				Marshal.ReleaseComObject(videoCaptureOutputPin);
+				Marshal.ReleaseComObject(grabberInputPin);
 
 				// Add the frame grabber to the graph
 				nullRenderer = (IBaseFilter)new NullRenderer();
 				hr = filterGraph.AddFilter(nullRenderer, "ASCOM Video Null Renderer");
 				DsError.ThrowExceptionForHR(hr);
 
-				// Render any preview pin of the device to the sample grabber
-				hr = capBuilder.RenderStream(PinCategory.Preview, MediaType.Video, capFilter, baseGrabFlt, nullRenderer);
+				// Connect the sample grabber to the null renderer (so frame samples will be coming through)
+				IPin grabberOutputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Output, 0);
+				IPin renderedInputPin = DsFindPin.ByDirection(nullRenderer, PinDirection.Input, 0);
+				hr = filterGraph.Connect(grabberOutputPin, renderedInputPin);
 				DsError.ThrowExceptionForHR(hr);
-
-				// Connect the device and compressor to the mux to render the capture part of the graph
-				hr = capBuilder.RenderStream(PinCategory.Capture, MediaType.Video, capFilter, compressorFilter, muxFilter);
-				DsError.ThrowExceptionForHR(hr);
-
+				Marshal.ReleaseComObject(grabberOutputPin);
+				Marshal.ReleaseComObject(renderedInputPin);
+				
 				return capFilter;
 			}
 			finally
-			{
-
-				if (compressorFilter != null)
-					Marshal.ReleaseComObject(compressorFilter);
-
-				if (muxFilter != null)
-					Marshal.ReleaseComObject(muxFilter);
-
-				if (fileWriterFilter != null)
-					Marshal.ReleaseComObject(fileWriterFilter);
-
+			{				
 				if (nullRenderer != null)
 					Marshal.ReleaseComObject(nullRenderer);
 			}
-			
 		}
 
-		private static string SMART_TEE_MONKIER = @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{CC58E280-8AA1-11D1-B3F1-00AA003761C5}";
-		private static string AVI_DECOMPRESSOR_MONKIER = @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{CF49D4E0-1115-11CE-B03A-0020AF0BA770}";
-
-		private IBaseFilter BuildFileCaptureGraph_WithCodec(DsDevice dev, DsDevice compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, string fileName, ref float iFrameRate, ref int iWidth, ref int iHeight)
+		private IBaseFilter BuildFileCaptureGraph(DsDevice dev, DsDevice compressor, VideoFormatHelper.SupportedVideoFormat selectedFormat, string fileName, ref float iFrameRate, ref int iWidth, ref int iHeight)
 		{
-			// Capture Source (Capture/Video) --> (Input) Smart Tee (Capture) --> (Input) Video Compressor (Output) --> (Input 01/Video/) AVI Mux (Output) --> (In) FileSink
-			//                                                      \
-			//                                                       (Preview)--> [AVI Decompressor] --> (Input) Sample Grabber (Output) --> (In) Null Renderer
-			//
-			// NOTE: An AVI Decompressor will be inserted automatically between the [Smart Tee] and [Sample Grabber]
-
+			// Capture Source (Capture/Video) --> (Input) Sample Grabber (Output) --> (Input) Video Compressor (Output) --> (Input 01/Video/) AVI Mux (Output) --> (In) FileSink
 
 			IBaseFilter muxFilter = null;
 			IFileSinkFilter fileWriterFilter = null;
-			IBaseFilter nullRenderer = null;
-			IBaseFilter smartTeeFilter = null;
 			IBaseFilter compressorFilter = null;
 
 			try
@@ -370,63 +289,53 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 				hr = filterGraph.AddFilter(baseGrabFlt, "ASCOM Video Grabber");
 				DsError.ThrowExceptionForHR(hr);
 
-				smartTeeFilter = Marshal.BindToMoniker(SMART_TEE_MONKIER) as IBaseFilter;
-				hr = filterGraph.AddFilter(smartTeeFilter, "ASCOM Video SmartTee");
-				DsError.ThrowExceptionForHR(hr);
-
-				// Connect the video device output to the splitter
-				IPin videoCaptureOutputPin = FindPin(capFilter, PinDirection.Output, MediaType.Video, "Capture");
-				IPin smartTeeInputPin = DsFindPin.ByDirection(smartTeeFilter, PinDirection.Input, 0);
+				// Connect the video device output to the sample grabber
+				IPin videoCaptureOutputPin = FindPin(capFilter, PinDirection.Output, MediaType.Video, Guid.Empty, "Capture");
+				IPin smartTeeInputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Input, 0);
 				hr = filterGraph.Connect(videoCaptureOutputPin, smartTeeInputPin);
 				DsError.ThrowExceptionForHR(hr);
 				Marshal.ReleaseComObject(videoCaptureOutputPin);
 				Marshal.ReleaseComObject(smartTeeInputPin);
 
-				// Connect the splitter Preview pin to the sample grabber
-				IPin smartTeePreviewPin = DsFindPin.ByName(smartTeeFilter, "Preview");
-				IPin grabberInputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Input, 0);
-				hr = filterGraph.Connect(smartTeePreviewPin, grabberInputPin);
-				DsError.ThrowExceptionForHR(hr);
-				Marshal.ReleaseComObject(smartTeePreviewPin);
-				Marshal.ReleaseComObject(grabberInputPin);
-
-				// Add the frame grabber to the graph
-				nullRenderer = (IBaseFilter)new NullRenderer();
-				hr = filterGraph.AddFilter(nullRenderer, "ASCOM Video Null Renderer");
-				DsError.ThrowExceptionForHR(hr);
-
-				// Connect the sample grabber to the null renderer (so frame samples will be coming through)
-				IPin grabberOutputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Output, 0);
-				IPin renderedInputPin = DsFindPin.ByDirection(nullRenderer, PinDirection.Input, 0);
-				hr = filterGraph.Connect(grabberOutputPin, renderedInputPin);
-				DsError.ThrowExceptionForHR(hr);
-				Marshal.ReleaseComObject(grabberOutputPin);
-				Marshal.ReleaseComObject(renderedInputPin);
-
-				// Create the compressor
-				compressorFilter = CreateFilter(FilterCategory.VideoCompressorCategory, compressor.Name);
-				hr = filterGraph.AddFilter(compressorFilter, "ASCOM Video Compressor");
-				DsError.ThrowExceptionForHR(hr);
-
-				// Connect the splitter Capture pin to the compressor
-				IPin smartTeeCapturePin = DsFindPin.ByName(smartTeeFilter, "Capture");
-				IPin compressorInputPin = DsFindPin.ByDirection(compressorFilter, PinDirection.Input, 0);
-				hr = filterGraph.Connect(smartTeeCapturePin, compressorInputPin);
-				DsError.ThrowExceptionForHR(hr);
-				Marshal.ReleaseComObject(smartTeeCapturePin);
-				Marshal.ReleaseComObject(compressorInputPin);
-
 				// Create the file writer and AVI Mux (already connected to each other)
 				hr = capBuilder.SetOutputFileName(MediaSubType.Avi, fileName, out muxFilter, out fileWriterFilter);
 				DsError.ThrowExceptionForHR(hr);
 
-				// Connect the compressor output to the AVI Mux
-				IPin compressorOutputPin = DsFindPin.ByDirection(compressorFilter, PinDirection.Output, 0);
-				IPin aviMuxVideoInputPin = DsFindPin.ByDirection(muxFilter, PinDirection.Input, 0);
-				hr = filterGraph.Connect(compressorOutputPin, aviMuxVideoInputPin);
-				DsError.ThrowExceptionForHR(hr);
-				Marshal.ReleaseComObject(compressorOutputPin);
-				Marshal.ReleaseComObject(aviMuxVideoInputPin);
+				if (compressor != null)
+					// Create the compressor
+					compressorFilter = CreateFilter(FilterCategory.VideoCompressorCategory, compressor.Name);
+
+				if (compressorFilter != null)
+				{
+					hr = filterGraph.AddFilter(compressorFilter, "ASCOM Video Compressor");
+					DsError.ThrowExceptionForHR(hr);
+
+					// Connect the sample grabber Output pin to the compressor
+					IPin grabberOutputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Output, 0);
+					IPin compressorInputPin = DsFindPin.ByDirection(compressorFilter, PinDirection.Input, 0);
+					hr = filterGraph.Connect(grabberOutputPin, compressorInputPin);
+					DsError.ThrowExceptionForHR(hr);
+					Marshal.ReleaseComObject(grabberOutputPin);
+					Marshal.ReleaseComObject(compressorInputPin);
+
+					// Connect the compressor output to the AVI Mux
+					IPin compressorOutputPin = DsFindPin.ByDirection(compressorFilter, PinDirection.Output, 0);
+					IPin aviMuxVideoInputPin = DsFindPin.ByDirection(muxFilter, PinDirection.Input, 0);
+					hr = filterGraph.Connect(compressorOutputPin, aviMuxVideoInputPin);
+					DsError.ThrowExceptionForHR(hr);
+					Marshal.ReleaseComObject(compressorOutputPin);
+					Marshal.ReleaseComObject(aviMuxVideoInputPin);
+				}
+				else
+				{
+					// Connect the sample grabber Output pin to the AVI Mux
+					IPin grabberOutputPin = DsFindPin.ByDirection(baseGrabFlt, PinDirection.Output, 0);
+					IPin aviMuxVideoInputPin = DsFindPin.ByDirection(muxFilter, PinDirection.Input, 0);
+					hr = filterGraph.Connect(grabberOutputPin, aviMuxVideoInputPin);
+					DsError.ThrowExceptionForHR(hr);
+					Marshal.ReleaseComObject(grabberOutputPin);
+					Marshal.ReleaseComObject(aviMuxVideoInputPin);					
+				}
 
 				return capFilter;
 			}
@@ -440,22 +349,38 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 
 				if (compressorFilter != null)
 					Marshal.ReleaseComObject(compressorFilter);
-
-				if (nullRenderer != null)
-					Marshal.ReleaseComObject(nullRenderer);
-
-				if (smartTeeFilter != null)
-					Marshal.ReleaseComObject(smartTeeFilter);
 			}
 		}
 
-		private IPin FindPin(IBaseFilter filter, PinDirection direction, Guid mediaType, string preferredName)
+		private IPin FindPin(IBaseFilter filter, PinDirection direction, Guid mediaType, Guid pinCategory, string preferredName)
 		{
+			if (Guid.Empty != pinCategory)
+			{
+				int idx = 0;
+
+				do
+				{
+					IPin pinByCategory = DsFindPin.ByCategory(filter, pinCategory, idx);
+
+					if (pinByCategory != null)
+					{
+						if (IsMatchingPin(pinByCategory, direction, mediaType))
+							return pinByCategory;
+
+						Marshal.ReleaseComObject(pinByCategory);
+					}
+					else
+						break;
+
+					idx++;
+				}
+				while (true);
+			}
+
 			if (!string.IsNullOrEmpty(preferredName))
 			{
 				IPin pinByName = DsFindPin.ByName(filter, preferredName);
-
-				if (IsMatchingPin(pinByName, direction, mediaType))
+				if (pinByName != null && IsMatchingPin(pinByName, direction, mediaType))
 					return pinByName;
 
 				Marshal.ReleaseComObject(pinByName);
@@ -481,6 +406,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 
 			return null;
 		}
+
 
 		private bool IsMatchingPin(IPin pin, PinDirection direction, Guid mediaType)
 		{
