@@ -134,6 +134,7 @@
     <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\DirectShowCapture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\NonBlockingLock.cs" />
     <Compile Include="DeviceInterface\DirectShowVideo\VideoCaptureImpl\VideoCameraFrame.cs">
       <SubType>Code</SubType>
     </Compile>

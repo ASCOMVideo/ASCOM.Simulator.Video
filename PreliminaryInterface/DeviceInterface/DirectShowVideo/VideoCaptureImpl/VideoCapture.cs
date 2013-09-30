@@ -26,10 +26,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using ASCOM.DeviceInterface;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
+using ASCOM.DeviceInterface.DirectShowVideo;
 using ASCOM.Utilities.Video;
 using DirectShowLib;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
+using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 
 namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 {

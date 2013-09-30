@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
+using ASCOM.DeviceInterface.DirectShowVideo;
 using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using Microsoft.Win32;
 

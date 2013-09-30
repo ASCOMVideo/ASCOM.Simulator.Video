@@ -5,7 +5,7 @@ using System.Text;
 using ASCOM.DeviceInterface.DirectShowVideo;
 using ASCOM.Utilities.Video;
 
-namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo
+namespace ASCOM.DeviceInterface.DirectShowVideo
 {
 	public class DirectShowVideoSettings : System.Configuration.ApplicationSettingsBase
 	{

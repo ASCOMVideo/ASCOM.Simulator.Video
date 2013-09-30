@@ -26,8 +26,11 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
+using System.Threading;
+using System.Windows.Forms;
 using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
+using ASCOM.DeviceInterface.DirectShowVideo;
+using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using DirectShowLib;
 
 namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
@@ -159,11 +162,17 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
                 firstFrameReceived = true;
             }
 
-			lock (syncRoot)
-			{
-				frameId = frameCounter;
-				return (Bitmap)latestBitmap.Clone();
-			}
+			Bitmap rv = null;
+
+			NonBlockingLock.Lock(
+				NonBlockingLock.LOCK_ID_GetNextFrame,
+				() =>
+				{
+					rv = (Bitmap)latestBitmap.Clone();
+				});
+
+			frameId = frameCounter;
+			return rv;
 		}
 
 		private IBaseFilter CreateFilter(Guid category, string friendlyname)
@@ -589,89 +598,6 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			}
 		}
 
-		private void SetConfigParms(ICaptureGraphBuilder2 capBuilder, IBaseFilter capFilter, ref float iFrameRate, ref int iWidth, ref int iHeight)
-		{
-			object o;
-			AMMediaType media;
-			IAMStreamConfig videoStreamConfig;
-			IAMVideoControl videoControl = capFilter as IAMVideoControl;
-
-			int hr = capBuilder.FindInterface(PinCategory.Capture, MediaType.Video, capFilter, typeof(IAMStreamConfig).GUID, out o);
-
-			videoStreamConfig = o as IAMStreamConfig;
-			try
-			{
-				if (videoStreamConfig == null)
-				{
-					throw new Exception("Failed to get IAMStreamConfig");
-				}
-
-				hr = videoStreamConfig.GetFormat(out media);
-				DsError.ThrowExceptionForHR(hr);
-
-				// Copy out the videoinfoheader
-				VideoInfoHeader v = new VideoInfoHeader();
-				Marshal.PtrToStructure(media.formatPtr, v);
-
-				// If overriding the framerate, set the frame rate
-				if (iFrameRate > 0)
-				{
-					v.AvgTimePerFrame = (int)Math.Round(10000000 / iFrameRate);
-				}
-				else
-					iFrameRate = 10000000 / v.AvgTimePerFrame;
-
-				// If overriding the width, set the width
-				if (iWidth > 0)
-				{
-					v.BmiHeader.Width = iWidth;
-				}
-				else
-					iWidth = v.BmiHeader.Width;
-
-				// If overriding the Height, set the Height
-				if (iHeight > 0)
-				{
-					v.BmiHeader.Height = iHeight;
-				}
-				else
-					iHeight = v.BmiHeader.Height;
-
-				// Copy the media structure back
-				Marshal.StructureToPtr(v, media.formatPtr, false);
-
-				// Set the new format
-				hr = videoStreamConfig.SetFormat(media);
-				DsError.ThrowExceptionForHR(hr);
-
-				DsUtils.FreeAMMediaType(media);
-				media = null;
-
-				// Fix upsidedown video
-				if (videoControl != null)
-				{
-					VideoControlFlags pCapsFlags;
-
-					IPin pPin = DsFindPin.ByCategory(capFilter, PinCategory.Capture, 0);
-					hr = videoControl.GetCaps(pPin, out pCapsFlags);
-					DsError.ThrowExceptionForHR(hr);
-
-					if ((pCapsFlags & VideoControlFlags.FlipVertical) > 0)
-					{
-						hr = videoControl.GetMode(pPin, out pCapsFlags);
-						DsError.ThrowExceptionForHR(hr);
-
-						hr = videoControl.SetMode(pPin, pCapsFlags & ~VideoControlFlags.FlipVertical);
-						DsError.ThrowExceptionForHR(hr);
-					}
-				}
-			}
-			finally
-			{
-				Marshal.ReleaseComObject(videoStreamConfig);
-			}
-		}
-
 		private void ConfigureSampleGrabber(ISampleGrabber sampGrabber)
 		{
 			AMMediaType media = new AMMediaType();
@@ -695,7 +621,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
         {
             CloseInterfaces();
 
-	        lock (this)
+			lock (syncRoot)
 	        {
 		        if (latestBitmap != null)
 		        {
@@ -739,10 +665,21 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		{
 			try
 			{
+				Thread.Sleep(50);
+
 				if (mediaCtrl != null)
 				{
-					// Stop the graph
-					int hr = mediaCtrl.Stop();
+					NonBlockingLock.ExclusiveLock(
+						NonBlockingLock.LOCK_ID_CloseInterfaces,
+						() =>
+						{
+							Application.DoEvents();
+
+							// Stop the graph
+							int hr = mediaCtrl.Stop();
+							DsError.ThrowExceptionForHR(hr);
+						});
+
 					mediaCtrl = null;
 					isRunning = false;
 				}
@@ -775,20 +712,16 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		/// <summary> buffer callback, COULD BE FROM FOREIGN THREAD. </summary>
 		int ISampleGrabberCB.BufferCB(double SampleTime, IntPtr pBuffer, int BufferLen)
 		{
-			// TODO: Implement a no-blocking loading using 2 bitmaps and CompareExchange - making sure
-			//       that the image being returned by GetNextFrame() is never the same as the one being copied here
-			//       if the GetNextFrame() requires more time to work, then this code here should continue to copy the new
-			//       frames into the second image
-			
-			lock (syncRoot)
-			{
+			NonBlockingLock.Lock(
+				NonBlockingLock.LOCK_ID_BufferCB,
+				() =>
+				{
+					CopyBitmap(pBuffer);
 
-				// TODO: Investigate 'pinning' the unamaged pBuffer pointer rather than copying it. This would speed up things dramatically
+					frameCounter++;
+				});
 
-				CopyBitmap(pBuffer);
-
-				frameCounter++;
-			}
+			Thread.Sleep(1);
 
 			return 0;
 		}

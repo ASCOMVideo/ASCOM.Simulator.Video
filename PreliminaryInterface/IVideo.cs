@@ -141,16 +141,17 @@ namespace ASCOM.DeviceInterface
 		object ImageArrayVariant { get; }
 
 		/// <summary>
-		/// Returns a preview bitmap for the last video frame. 
+		/// Returns a HBITMAP handle to a preview bitmap for the last video frame. 
 		/// </summary>
 		/// <remarks>
-		/// <p style="color:red"><b>Must be implemented</b></p> The application can use this bitmap to show a preview image of the last video frame when required. This is a convenience property for 
+		/// <p style="color:red"><b>Must be implemented</b></p> The application can use this handle to show a preview image of the last video frame when required. This is a convenience property for 
 		/// those applications that don't require to process the <see cref="P:ASCOM.DeviceInterface.IVideoFrame.ImageArray"/> or <see cref="P:ASCOM.DeviceInterface.IVideoFrame.ImageArrayVariant"/>
 		/// but usually only adjust the video camera settings and then record a video file. 
 		/// <para>When a 24bit RGB image can be returned by the driver this should be the preferred format. </para>
+		/// <para>A .NET client can make a call to <see cref="M:System.Drawing.Image.FromHbitmap(System.IntPtr)"/> to convert the HBITMAP handle to a displayable bitmap.</para>
 		/// </remarks>
 		/// <value>The preview bitmap image.</value>
-		Bitmap PreviewBitmap { get; }
+		IntPtr PreviewBitmap { get; }
 
 		/// <summary>
 		/// Returns the frame number.

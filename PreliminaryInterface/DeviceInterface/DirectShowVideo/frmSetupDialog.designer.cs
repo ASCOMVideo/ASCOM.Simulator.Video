@@ -35,7 +35,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblVersion = new System.Windows.Forms.Label();
-			this.ucDirectShowVideoSettings = new ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.ucDirectShowVideoSettings();
+			this.ucDirectShowVideoSettings = new ASCOM.DeviceInterface.DirectShowVideo.ucDirectShowVideoSettings();
 			((System.ComponentModel.ISupportInitialize)(this.picASCOM)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -133,6 +133,6 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Label lblVersion;
-		private DeviceInterface.DirectShowVideo.ucDirectShowVideoSettings ucDirectShowVideoSettings;
+		private ucDirectShowVideoSettings ucDirectShowVideoSettings;
 	}
 }

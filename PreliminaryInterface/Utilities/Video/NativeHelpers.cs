@@ -23,13 +23,6 @@ using ASCOM.DeviceInterface.DirectShowVideo;
 
 namespace ASCOM.Utilities.Video
 {
-	internal class VideoNativeException : Exception
-    {
-        public VideoNativeException(string message)
-            : base(message)
-        { }
-    }
-
 	internal enum FlipMode
 	{
 		None = 0,

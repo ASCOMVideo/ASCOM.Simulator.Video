@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
+using ASCOM.DeviceInterface.DirectShowVideo;
 using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using ASCOM.Utilities.Video;
 using DirectShowLib;
@@ -36,7 +36,7 @@ using DirectShowLib;
 namespace ASCOM.DeviceInterface.DirectShowVideo
 {
 	[ComVisible(false)]
-	public partial class frmSetupDialog : Form
+	internal partial class frmSetupDialog : Form
 	{
 		private string driverVersion;
 

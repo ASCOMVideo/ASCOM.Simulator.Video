@@ -9,11 +9,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using DirectShowLib;
 
-namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl
+namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 {
-	public static class VideoFormatHelper
+	internal static class VideoFormatHelper
 	{
-
 		internal class SupportedVideoFormat
 		{
 			public SupportedVideoFormat()
@@ -237,5 +236,4 @@ namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			}
 		}
 	}
-
 }

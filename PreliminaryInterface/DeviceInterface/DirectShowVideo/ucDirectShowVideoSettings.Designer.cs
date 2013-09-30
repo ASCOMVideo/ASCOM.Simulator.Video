@@ -1,4 +1,4 @@
-﻿namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo
+﻿namespace ASCOM.DeviceInterface.DirectShowVideo
 {
 	partial class ucDirectShowVideoSettings
 	{

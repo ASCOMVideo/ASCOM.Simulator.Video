@@ -136,9 +136,9 @@ namespace ASCOM.Simulator
 			}
 		}
 
-		public Bitmap PreviewBitmap
+		public IntPtr PreviewBitmap
 		{
-			get { return previewBitmap; }
+			get { return previewBitmap != null ? previewBitmap.GetHbitmap() : IntPtr.Zero; }
 		}
 
 		/// <summary>

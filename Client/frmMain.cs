@@ -324,9 +324,9 @@ namespace Client
 				get { return null; }
 			}
 
-			public Bitmap PreviewBitmap
+			public IntPtr PreviewBitmap
 			{
-				get { return null; }
+				get { return IntPtr.Zero; }
 			}
 
 			public long FrameNumber
@@ -378,7 +378,7 @@ namespace Client
 
 							if (Settings.Default.UsePreviewBitmap)
 							{
-								bmp = frame.PreviewBitmap;
+								bmp = Image.FromHbitmap(frame.PreviewBitmap);
 							}
 							else if (Settings.Default.UseNativeCode)
 							{

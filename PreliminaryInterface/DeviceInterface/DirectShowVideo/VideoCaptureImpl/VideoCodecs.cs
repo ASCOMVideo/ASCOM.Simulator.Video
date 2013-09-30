@@ -23,7 +23,7 @@ using DirectShowLib;
 
 namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 {
-	public class DsDeviceNameAttribute : Attribute
+	internal class DsDeviceNameAttribute : Attribute
 	{
 		public string DeviceName { get; set; }
 		public string FourCC { get; set; }
@@ -35,7 +35,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		}
 	}
 
-	public enum SupportedCodec
+	internal enum SupportedCodec
 	{
 		Uncompressed,
 
@@ -51,7 +51,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
         Unsupported
 	}
 
-	public class SystemCodecEntry
+	internal class SystemCodecEntry
 	{
 		private SupportedCodec codec = SupportedCodec.Unsupported;
 		private DsDeviceNameAttribute codecAttribute = null;
@@ -117,8 +117,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 		}		
 	}
 
-
-	public static class VideoCodecs
+	internal static class VideoCodecs
 	{
 		public static string UNCOMPRESSED_VIDEO = "Uncompressed";
 

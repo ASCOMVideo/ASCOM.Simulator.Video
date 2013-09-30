@@ -46,7 +46,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 		GrayScale = 3
 	}
 	
-	public class VideoFrame : IVideoFrame
+	internal class VideoFrame : IVideoFrame
 	{
 		private long? frameNumber;
 		private string imageInfo;
@@ -150,11 +150,11 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 			}
 		}
 
-		public Bitmap PreviewBitmap
+		public IntPtr PreviewBitmap
 		{
 			get
 			{
-				return previewBitmap;
+				return previewBitmap != null ? previewBitmap.GetHbitmap() : IntPtr.Zero;
 			}
 		}
 

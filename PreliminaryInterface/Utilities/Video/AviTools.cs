@@ -20,6 +20,7 @@ using ASCOM.Utilities.Video;
 
 namespace ASCOM.DeviceInterface.Utilities.Video
 {
+	// NOTE: If this class is to be put in the same assemby as the video simulator then it can be marked internal. Otherwise we could use InternalsVisibleTo() attribute or something similar
     public class AviTools
     {
         public static void SetNewGamma(double newGamma)

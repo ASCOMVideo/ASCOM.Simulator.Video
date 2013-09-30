@@ -7,12 +7,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
+using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using ASCOM.DeviceInterface.DirectShowVideo;
 using ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl;
 using DirectShowLib;
 
-namespace ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo
+namespace ASCOM.DeviceInterface.DirectShowVideo
 {
 	public partial class ucDirectShowVideoSettings : UserControl
 	{

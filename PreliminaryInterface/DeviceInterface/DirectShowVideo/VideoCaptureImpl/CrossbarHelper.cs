@@ -22,12 +22,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using ASCOM.DeviceInterface.DeviceInterface.DirectShowVideo;
+using ASCOM.DeviceInterface.DirectShowVideo;
 using DirectShowLib;
 
 namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 {
-    public class CrossbarHelper
+    internal class CrossbarHelper
     {
 	    private DirectShowVideoSettings settings;
 
