@@ -11,9 +11,6 @@
     <Setting Name="FreeRangeGainIntervals" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">16</Value>
     </Setting>
-    <Setting Name="VariantPixels" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="UsePreviewBitmap" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

@@ -29,7 +29,7 @@ namespace Simulator.VideoCameraImpl
 	public class VideoCameraFrame
 	{
 		public int[,] Pixels;
-		public Bitmap PreviewBitmap;
+		public byte[] PreviewBitmapBytes;
 		public long? FrameNumber;
 		public DateTime? ExposureStartTime;
 		public double? ExposureDuration;
@@ -503,9 +503,9 @@ namespace Simulator.VideoCameraImpl
 			{
 				long currentFrameNo;
 				int[,] currentFrame;
-				Bitmap previewBitmap;
+				byte[] previewBitmapBytes;
 
-				bitmapPlayer.GetCurrentImage(out currentFrame, out currentFrameNo, out previewBitmap);
+				bitmapPlayer.GetCurrentImage(out currentFrame, out currentFrameNo, out previewBitmapBytes);
 
 				short currentGain = GetCurrentGain();
 				double currentGamma = GetCurrentGammaValue();
@@ -529,7 +529,7 @@ namespace Simulator.VideoCameraImpl
 					{
 						Pixels = currentFrame,
 						FrameNumber = currentFrameNo,
-						PreviewBitmap = previewBitmap
+						PreviewBitmapBytes = previewBitmapBytes
 					};	
 				}
 

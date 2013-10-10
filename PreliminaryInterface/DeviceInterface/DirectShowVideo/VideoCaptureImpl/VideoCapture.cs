@@ -52,7 +52,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			dsCapture = new DirectShowCapture(settings);
 		}
 
-		private ICameraImage cameraImageHelper = new CameraImage();
+		private CameraImage cameraImageHelper = new CameraImage();
 
 		private VideoCameraState cameraState = VideoCameraState.videoCameraIdle;
 
@@ -210,13 +210,14 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 
 				using (bmp)
 				{
-					object pixels = cameraImageHelper.GetImageArray(bmp, SimulatedSensorType, settings.LumaConversionMode);
+					byte[] bitmapBytes;
+					object pixels = cameraImageHelper.GetImageArray(bmp, SimulatedSensorType, settings.LumaConversionMode, out bitmapBytes);
 
 					cameraFrame = new VideoCameraFrame()
 					{
 						FrameNumber = frameId,
 						Pixels = pixels,
-						PreviewBitmap = GetBitmapForSensorType(bmp, SimulatedSensorType, settings.LumaConversionMode),
+						PreviewBitmapBytes = bitmapBytes,
 						ImageLayout = settings.SimulatedImageLayout
 					};
 				}
@@ -230,17 +231,6 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 			}
 		}
 
-		private Bitmap GetBitmapForSensorType(Bitmap bmp, SensorType sensorType, LumaConversionMode lumaConversionMode)
-		{
-			if (sensorType == SensorType.Color)
-				return (Bitmap)bmp.Clone();
-			else if (sensorType == SensorType.Monochrome)
-			{
-				return (Bitmap)bmp.Clone();
-			}
-			else
-				throw new NotSupportedException(string.Format("Sensor type {0} is not supported.", sensorType));
-		}
 
 		public VideoCameraState GetCurrentCameraState()
 		{

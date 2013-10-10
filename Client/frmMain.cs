@@ -41,7 +41,6 @@ namespace Client
 
 		private int imageWidth;
 		private int imageHeight;
-		private bool useVariantPixels;
 		private string recordingfileName;
 		private int framesBeforeUpdatingCameraVideoFormat = -1;
 
@@ -83,7 +82,6 @@ namespace Client
 
 			if (!string.IsNullOrEmpty(progId))
 			{
-				useVariantPixels = Settings.Default.VariantPixels;
 				videoObject = new VideoWrapper(new Video(progId));
 				
 				try
@@ -256,9 +254,7 @@ namespace Client
 		{
 			bool isEmptyFrame = frame == null;
 			if (!isEmptyFrame)
-				isEmptyFrame = useVariantPixels 
-					? frame.ImageArrayVariant == null 
-					: frame.ImageArray == null;
+				isEmptyFrame = frame.ImageArray == null;
 
 			if (isEmptyFrame)
 			{
@@ -324,9 +320,9 @@ namespace Client
 				get { return null; }
 			}
 
-			public IntPtr PreviewBitmap
+			public byte[] PreviewBitmap
 			{
-				get { return IntPtr.Zero; }
+				get { return null; }
 			}
 
 			public long FrameNumber
@@ -365,9 +361,7 @@ namespace Client
 				{
 					try
 					{
-						IVideoFrame frame = useVariantPixels 
-								? videoObject.LastVideoFrameVariant 
-								: videoObject.LastVideoFrame;
+						IVideoFrame frame = videoObject.LastVideoFrame;
 
 						if (frame != null &&
 							(frame.FrameNumber == -1 || frame.FrameNumber != lastDisplayedVideoFrameNumber))
@@ -378,33 +372,37 @@ namespace Client
 
 							if (Settings.Default.UsePreviewBitmap)
 							{
-								bmp = Image.FromHbitmap(frame.PreviewBitmap);
+								using (MemoryStream memStr = new MemoryStream(frame.PreviewBitmap))
+								{
+									bmp = (Bitmap)Image.FromStream(memStr);	
+								}
+								
 							}
 							else if (Settings.Default.UseNativeCode)
 							{
                                 cameraImage.SetImageArray(
-                                    useVariantPixels 
-                                        ? frame.ImageArrayVariant 
-                                        : frame.ImageArray, 
+									frame.ImageArray, 
                                     imageWidth, 
                                     imageHeight, 
                                     videoObject.SensorType);
 
-							    bmp = cameraImage.GetDisplayBitmap();
+							    byte[] bmpBytes = cameraImage.GetDisplayBitmapBytes();
+								using (MemoryStream memStr = new MemoryStream(bmpBytes))
+								{
+									bmp = (Bitmap)Image.FromStream(memStr);
+								}
 							}
 							else
 							{
-								Array safeArr = useVariantPixels
-										? (Array)frame.ImageArrayVariant
-								        : (Array) frame.ImageArray;
+								Array safeArr = (Array) frame.ImageArray;
 
 								int[,] pixels;
 								if (safeArr is int[,])
 									pixels = (int[,])safeArr;
-								else if (safeArr is object[,])
+								else if (safeArr is int[,,])
 								{
-									pixels = new int[imageHeight,imageWidth];
-									Array.Copy(safeArr, pixels, imageWidth * imageHeight);	
+									// R,G,B planes
+									throw new NotSupportedException();
 								}
 								else
 									throw new NotSupportedException("Unsupported pixel format in Managed mode.");

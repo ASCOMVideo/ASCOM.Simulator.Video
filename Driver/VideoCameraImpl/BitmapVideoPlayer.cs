@@ -48,7 +48,7 @@ namespace Simulator.VideoCameraImpl
 		private int width = 640;
 		private int height = 480;
 
-		private ICameraImage cameraImage;
+		private CameraImage cameraImage;
 
 		private Thread playerThread = null;
 		private static List<int[,]> allImagesPixels = new List<int[,]>();
@@ -562,13 +562,13 @@ namespace Simulator.VideoCameraImpl
 
 		private BufferedFrameInfo nextBufferedFrame = new BufferedFrameInfo() { FirstIntegratedFrameIndex = -1 };
 
-		public void GetCurrentImage(out int[,] currentFrame, out long currentFrameNo, out Bitmap previewBitmap)
+		public void GetCurrentImage(out int[,] currentFrame, out long currentFrameNo, out byte[] previewBitmapBytes)
 		{
 			if (errorBitmap != null)
 			{
 				currentFrame = errorPixels;
 				currentFrameNo = this.currentFrameNo;
-				previewBitmap = (Bitmap)errorBitmap.Clone();
+				previewBitmapBytes = cameraImage.GetBitmapBytes(errorBitmap);
 			}
 			else
 			{
@@ -596,7 +596,7 @@ namespace Simulator.VideoCameraImpl
 				}
 
 				cameraImage.SetImageArray(currentFrame, width, height, SensorType.Monochrome);
-				previewBitmap = cameraImage.GetDisplayBitmap();
+				previewBitmapBytes = cameraImage.GetDisplayBitmapBytes();
 			}
 		}
 

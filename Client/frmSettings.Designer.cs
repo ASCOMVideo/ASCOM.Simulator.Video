@@ -30,6 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSettings));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.rbPreviewBitmap = new System.Windows.Forms.RadioButton();
 			this.rbManaged = new System.Windows.Forms.RadioButton();
 			this.rbNative = new System.Windows.Forms.RadioButton();
 			this.btnCancel = new System.Windows.Forms.Button();
@@ -40,14 +41,9 @@
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.nudGainIntervals = new System.Windows.Forms.NumericUpDown();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbPixelsVariant = new System.Windows.Forms.RadioButton();
-			this.rbPixelsIntegers = new System.Windows.Forms.RadioButton();
-			this.rbPreviewBitmap = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudGainIntervals)).BeginInit();
 			this.groupBox2.SuspendLayout();
-			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -61,6 +57,16 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Bitmap Handling";
+			// 
+			// rbPreviewBitmap
+			// 
+			this.rbPreviewBitmap.AutoSize = true;
+			this.rbPreviewBitmap.Location = new System.Drawing.Point(227, 25);
+			this.rbPreviewBitmap.Name = "rbPreviewBitmap";
+			this.rbPreviewBitmap.Size = new System.Drawing.Size(98, 17);
+			this.rbPreviewBitmap.TabIndex = 4;
+			this.rbPreviewBitmap.Text = "Preview Bitmap";
+			this.rbPreviewBitmap.UseVisualStyleBackColor = true;
 			// 
 			// rbManaged
 			// 
@@ -145,62 +151,18 @@
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.nudGainIntervals);
-			this.groupBox2.Location = new System.Drawing.Point(213, 70);
+			this.groupBox2.Location = new System.Drawing.Point(15, 81);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(181, 51);
+			this.groupBox2.Size = new System.Drawing.Size(378, 51);
 			this.groupBox2.TabIndex = 8;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Free range gain intervals";
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.rbPixelsVariant);
-			this.groupBox3.Controls.Add(this.rbPixelsIntegers);
-			this.groupBox3.Location = new System.Drawing.Point(12, 70);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(181, 52);
-			this.groupBox3.TabIndex = 9;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Frame Pixels";
-			// 
-			// rbPixelsVariant
-			// 
-			this.rbPixelsVariant.AutoSize = true;
-			this.rbPixelsVariant.Location = new System.Drawing.Point(94, 25);
-			this.rbPixelsVariant.Name = "rbPixelsVariant";
-			this.rbPixelsVariant.Size = new System.Drawing.Size(63, 17);
-			this.rbPixelsVariant.TabIndex = 3;
-			this.rbPixelsVariant.Text = "Variants";
-			this.rbPixelsVariant.UseVisualStyleBackColor = true;
-			// 
-			// rbPixelsIntegers
-			// 
-			this.rbPixelsIntegers.AutoSize = true;
-			this.rbPixelsIntegers.Checked = true;
-			this.rbPixelsIntegers.Location = new System.Drawing.Point(20, 25);
-			this.rbPixelsIntegers.Name = "rbPixelsIntegers";
-			this.rbPixelsIntegers.Size = new System.Drawing.Size(63, 17);
-			this.rbPixelsIntegers.TabIndex = 2;
-			this.rbPixelsIntegers.TabStop = true;
-			this.rbPixelsIntegers.Text = "Integers";
-			this.rbPixelsIntegers.UseVisualStyleBackColor = true;
-			// 
-			// rbPreviewBitmap
-			// 
-			this.rbPreviewBitmap.AutoSize = true;
-			this.rbPreviewBitmap.Location = new System.Drawing.Point(227, 25);
-			this.rbPreviewBitmap.Name = "rbPreviewBitmap";
-			this.rbPreviewBitmap.Size = new System.Drawing.Size(98, 17);
-			this.rbPreviewBitmap.TabIndex = 4;
-			this.rbPreviewBitmap.Text = "Preview Bitmap";
-			this.rbPreviewBitmap.UseVisualStyleBackColor = true;
 			// 
 			// frmSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(408, 223);
-			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.btnBrowseOutputFolder);
 			this.Controls.Add(this.label1);
@@ -219,8 +181,6 @@
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudGainIntervals)).EndInit();
 			this.groupBox2.ResumeLayout(false);
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -239,9 +199,6 @@
 		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
 		private System.Windows.Forms.NumericUpDown nudGainIntervals;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.RadioButton rbPixelsVariant;
-		private System.Windows.Forms.RadioButton rbPixelsIntegers;
 		private System.Windows.Forms.RadioButton rbPreviewBitmap;
 	}
 }

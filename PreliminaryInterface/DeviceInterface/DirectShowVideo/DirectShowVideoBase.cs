@@ -176,25 +176,6 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 			}
 		}
 
-		public virtual IVideoFrame LastVideoFrameImageArrayVariant
-		{
-			get
-			{
-				AssertConnected();
-
-				VideoCameraFrame cameraFrame;
-
-				if (camera.GetCurrentFrame(out cameraFrame))
-				{
-					VideoFrame rv = VideoFrame.CreateFrameVariant(camera.ImageWidth, camera.ImageHeight, cameraFrame);
-					return rv;
-				}
-				else
-					throw new ASCOM.InvalidOperationException("No video frames are available.");
-			}
-		}
-
-
 		public SensorType SensorType
 		{
 			get

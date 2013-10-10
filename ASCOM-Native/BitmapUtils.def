@@ -9,6 +9,7 @@ EXPORTS
 	GetMonochromePixelsFromBitmap
 	GetColourPixelsFromBitmap
 	GetRGGBBayerPixelsFromBitmap
+	GetBitmapBytes
 
 	SetGamma
 	ApplyGammaBrightness

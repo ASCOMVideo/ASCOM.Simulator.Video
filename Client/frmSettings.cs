@@ -43,7 +43,6 @@ namespace Client
 			nudGainIntervals.Value = Settings.Default.FreeRangeGainIntervals;
 
 			tbxOutputLocation.Text = Settings.Default.OutputLocation;
-			rbPixelsVariant.Checked = Settings.Default.VariantPixels;
 		}
 
 		private void btnOK_Click(object sender, EventArgs e)
@@ -65,7 +64,6 @@ namespace Client
 			Settings.Default.UseNativeCode = rbNative.Checked;
 			Settings.Default.UsePreviewBitmap = rbPreviewBitmap.Checked;
 			Settings.Default.OutputLocation = tbxOutputLocation.Text;
-			Settings.Default.VariantPixels = rbPixelsVariant.Checked;
 
 			Settings.Default.Save();
 

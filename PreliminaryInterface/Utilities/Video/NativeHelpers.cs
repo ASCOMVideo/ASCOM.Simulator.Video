@@ -60,7 +60,8 @@ namespace ASCOM.Utilities.Video
 			int bpp,
 			FlipMode flipMode,
 			[In] IntPtr hBitmap,
-			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,] bitmapBytes,
+			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,] bitmapPixels,
+			[In, Out] byte[] bitmapBytes,
 			int mode);
 
 		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -70,7 +71,8 @@ namespace ASCOM.Utilities.Video
 			int bpp,
 			FlipMode flipMode,
 			[In] IntPtr hBitmap,
-			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,,] bitmapBytes);
+			[In, Out, MarshalAs(UnmanagedType.LPArray)] int[,,] bitmapPixels,
+			[In, Out] byte[] bitmapBytes);
 
         [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int SetGamma(double gamma);
@@ -83,6 +85,13 @@ namespace ASCOM.Utilities.Video
             [In, Out] int[,] pixelsIn,
             [In, Out] int[,] pixelsOut,
             short brightness);
+
+		[DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+		private static extern int GetBitmapBytes(
+			int width,
+			int height,
+			[In] IntPtr hBitmap,
+			[In, Out] byte[] bitmapBytes);
 
         [DllImport(VIDEOUTILS_DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int InitFrameIntegration(int width, int height, int bpp);
@@ -115,64 +124,81 @@ namespace ASCOM.Utilities.Video
 		public static extern bool DeleteObject(IntPtr hObject);
 
 
-		internal static Bitmap PrepareBitmapForDisplay(int[,] imageArray, int width, int height, FlipMode flipMode)
+		internal static byte[] PrepareBitmapForDisplay(int[,] imageArray, int width, int height, FlipMode flipMode)
         {
 			return PrepareBitmapForDisplay(imageArray, width, height, false, flipMode);
         }
 
-		internal static Bitmap PrepareBitmapForDisplay(object[,] imageArray, int width, int height, FlipMode flipMode)
+		internal static byte[] PrepareBitmapForDisplay(object[,] imageArray, int width, int height, FlipMode flipMode)
         {
 			return PrepareBitmapForDisplay(imageArray, width, height, true, flipMode);
         }
 
-		internal static Bitmap PrepareColourBitmapForDisplay(int[, ,] imageArray, int width, int height, FlipMode flipMode)
+		internal static byte[] PrepareColourBitmapForDisplay(int[, ,] imageArray, int width, int height, FlipMode flipMode)
 		{
 			return PrepareColourBitmapForDisplay(imageArray, width, height, false, flipMode);
 		}
 
-		internal static Bitmap PrepareColourBitmapForDisplay(object[, ,] imageArray, int width, int height, FlipMode flipMode)
+		internal static byte[] PrepareColourBitmapForDisplay(object[, ,] imageArray, int width, int height, FlipMode flipMode)
 		{
 			return PrepareColourBitmapForDisplay(imageArray, width, height, true, flipMode);
 		}
 
-		internal static object GetMonochromePixelsFromBitmap(Bitmap bitmap, LumaConversionMode conversionMode, FlipMode flipMode)
+		internal static object GetMonochromePixelsFromBitmap(Bitmap bitmap, LumaConversionMode conversionMode, FlipMode flipMode, out byte[] rawBitmapBytes)
 		{
-			int[,] bitmapBytes = new int[bitmap.Width, bitmap.Height];
+			int[,] bitmapPixels = new int[bitmap.Width, bitmap.Height];
+			rawBitmapBytes = new byte[(bitmap.Width * bitmap.Height * 3) + 40 + 14 + 1];
 
 			IntPtr hBitmap = bitmap.GetHbitmap();
 			try
 			{
-				GetMonochromePixelsFromBitmap(bitmap.Width, bitmap.Height, 8, flipMode, hBitmap, bitmapBytes, (int)conversionMode);
+				GetMonochromePixelsFromBitmap(bitmap.Width, bitmap.Height, 8, flipMode, hBitmap, bitmapPixels, rawBitmapBytes, (int)conversionMode);
 			}
 			finally
 			{
 				DeleteObject(hBitmap);
 			}
 
-			return bitmapBytes;
+			return bitmapPixels;
 		}
 
-		internal static object GetColourPixelsFromBitmap(Bitmap bitmap, FlipMode flipMode)
+		internal static object GetColourPixelsFromBitmap(Bitmap bitmap, FlipMode flipMode, out byte[] rawBitmapBytes)
 		{
-			int[,,] bitmapBytes = new int[bitmap.Width, bitmap.Height, 3];
+			int[, ,] bitmapPixels = new int[bitmap.Width, bitmap.Height, 3];
+			rawBitmapBytes = new byte[(bitmap.Width * bitmap.Height * 3) + 40 + 14 + 1];
 
 			IntPtr hBitmap = bitmap.GetHbitmap();
 			try
 			{
-				GetColourPixelsFromBitmap(bitmap.Width, bitmap.Height, 8, flipMode, hBitmap, bitmapBytes);
+				GetColourPixelsFromBitmap(bitmap.Width, bitmap.Height, 8, flipMode, hBitmap, bitmapPixels, rawBitmapBytes);
 			}
 			finally
 			{
 				DeleteObject(hBitmap);
 			}
 
-			return bitmapBytes;			
+			return bitmapPixels;
 		}
 
-		private static Bitmap PrepareBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels, FlipMode flipMode)
+		internal static byte[] GetBitmapBytes(Bitmap bitmap)
 		{
-			Bitmap displayBitmap = null;
+			byte[] rawBitmapBytes = new byte[(bitmap.Width * bitmap.Height * 3) + 40 + 14 + 1];
 
+			IntPtr hBitmap = bitmap.GetHbitmap();
+			try
+			{
+				GetBitmapBytes(bitmap.Width, bitmap.Height, hBitmap, rawBitmapBytes);
+			}
+			finally
+			{
+				DeleteObject(hBitmap);
+			}
+
+			return rawBitmapBytes;
+		}
+
+		private static byte[] PrepareBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels, FlipMode flipMode)
+		{
 			int[,] pixels = new int[height, width];
 
 			if (useVariantPixels)
@@ -190,18 +216,11 @@ namespace ASCOM.Utilities.Video
 
 			GetBitmapPixels(width, height, (int)8, flipMode, pixels, rawBitmapBytes);
 
-			using (MemoryStream memStr = new MemoryStream(rawBitmapBytes))
-			{
-				displayBitmap = (Bitmap)Image.FromStream(memStr);
-			}
-
-			return displayBitmap;
+			return rawBitmapBytes;
 		}
 
-		private static Bitmap PrepareColourBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels, FlipMode flipMode)
+		private static byte[] PrepareColourBitmapForDisplay(object imageArray, int width, int height, bool useVariantPixels, FlipMode flipMode)
 		{
-			Bitmap displayBitmap = null;
-
 			int[,,] pixels = new int[height, width, 3];
 
 			if (useVariantPixels)
@@ -219,12 +238,7 @@ namespace ASCOM.Utilities.Video
 
 			GetColourBitmapPixels(width, height, (int)8, flipMode, pixels, rawBitmapBytes);
 
-			using (var memStr = new MemoryStream(rawBitmapBytes))
-			{
-				displayBitmap = (Bitmap)Image.FromStream(memStr);
-			}
-
-			return displayBitmap;
+			return rawBitmapBytes;
 		}
 	}
 }

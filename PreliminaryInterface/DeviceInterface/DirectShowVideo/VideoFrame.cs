@@ -53,8 +53,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 		private double? exposureDuration;
 		private string exposureStartTime;
 		private object pixels;
-		private object pixelsVariant;
-		private Bitmap previewBitmap;
+		private byte[] previewBitmapBytes;
 
 		private static int s_Counter = 0;
 
@@ -68,55 +67,26 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 			return rv;
 		}
 
-		internal static VideoFrame CreateFrameVariant(int width, int height, VideoCameraFrame cameraFrame)
-		{
-			return InternalCreateFrame(width, height, cameraFrame, true);
-		}
-
 		internal static VideoFrame CreateFrame(int width, int height, VideoCameraFrame cameraFrame)
 		{
-			return InternalCreateFrame(width, height, cameraFrame, false);
+			return InternalCreateFrame(width, height, cameraFrame);
 		}
 
-		private static VideoFrame InternalCreateFrame(int width, int height, VideoCameraFrame cameraFrame, bool variant)
+		private static VideoFrame InternalCreateFrame(int width, int height, VideoCameraFrame cameraFrame)
 		{
 			var rv = new VideoFrame();
 
 			if (cameraFrame.ImageLayout == VideoFrameLayout.Monochrome)
 			{
-				if (variant)
-				{
-					rv.pixelsVariant = new object[height, width];
-					rv.pixels = null;
-				}
-				else
-				{
-					rv.pixels = new int[height, width];
-					rv.pixelsVariant = null;
-				}
+				rv.pixels = new int[height, width];
 
-				if (variant)
-					Array.Copy((int[,])cameraFrame.Pixels, (object[,])rv.pixelsVariant, ((int[,])cameraFrame.Pixels).Length);
-				else
-					rv.pixels = (int[,])cameraFrame.Pixels;
+				rv.pixels = (int[,])cameraFrame.Pixels;
 			}
 			else if (cameraFrame.ImageLayout == VideoFrameLayout.Color)
 			{
-				if (variant)
-				{
-					rv.pixelsVariant = new object[height, width, 3];
-					rv.pixels = null;
-				}
-				else
-				{
-					rv.pixels = new int[height, width, 3];
-					rv.pixelsVariant = null;
-				}
+				rv.pixels = new int[height, width, 3];
 
-				if (variant)
-					Array.Copy((int[, ,])cameraFrame.Pixels, (object[, ,])rv.pixelsVariant, ((int[, ,])cameraFrame.Pixels).Length);
-				else
-					rv.pixels = (int[, ,])cameraFrame.Pixels;
+				rv.pixels = (int[, ,])cameraFrame.Pixels;
 			}
 			else if (cameraFrame.ImageLayout == VideoFrameLayout.BayerRGGB)
 			{
@@ -125,7 +95,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 			else
 				throw new NotSupportedException();
 
-			rv.previewBitmap = cameraFrame.PreviewBitmap;
+			rv.previewBitmapBytes = cameraFrame.PreviewBitmapBytes;
 			rv.frameNumber = cameraFrame.FrameNumber;
 			rv.exposureStartTime = null;
 			rv.exposureDuration = null;
@@ -142,19 +112,11 @@ namespace ASCOM.DeviceInterface.DirectShowVideo
 			}
 		}
 
-		public object ImageArrayVariant
+		public byte[] PreviewBitmap
 		{
 			get
 			{
-				return pixelsVariant;
-			}
-		}
-
-		public IntPtr PreviewBitmap
-		{
-			get
-			{
-				return previewBitmap != null ? previewBitmap.GetHbitmap() : IntPtr.Zero;
+				return previewBitmapBytes;
 			}
 		}
 

@@ -530,22 +530,6 @@ namespace Client
 			}
 		}
 
-		public IVideoFrame LastVideoFrameVariant
-		{
-			get
-			{
-				if (video != null)
-				{
-					return
-						ShieldedCall(
-							() => video.LastVideoFrameImageArrayVariant,
-							null);
-				}
-				else
-					return null;
-			}
-		}
-
 		public string CameraFrameRate
 		{
 			get

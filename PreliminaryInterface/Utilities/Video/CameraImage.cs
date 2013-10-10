@@ -29,9 +29,7 @@ namespace ASCOM.Utilities.Video
         void SetImageArray(object imageArray, int imageWidth, int imageHeight, SensorType sensorType);
         int GetPixel(int x, int y);
 	    int GetPixel(int x, int y, int plain);
-        IntPtr GetDisplayHBitmap();
-        Bitmap GetDisplayBitmap();
-	    object GetImageArray(Bitmap bmp, SensorType sensorType, LumaConversionMode conversionMode);
+        byte[] GetDisplayBitmapBytes();
 		bool FlipHorizontaly { get; set; }
 		bool FlipVertically { get; set; }
     }
@@ -106,21 +104,6 @@ namespace ASCOM.Utilities.Video
             throw new ArgumentException();
         }
 
-        public IntPtr GetDisplayHBitmap()
-        {
-            IntPtr hBitmap = IntPtr.Zero;
-            using(Bitmap bmp = GetDisplayBitmap())
-            {
-                if (bmp != null)
-                {
-                    hBitmap = bmp.GetHbitmap();
-                    bmp.Dispose();
-                }
-            }
-
-            return hBitmap;
-        }
-
 		public bool FlipHorizontaly { get; set; }
 
 		public bool FlipVertically { get; set; }
@@ -137,7 +120,7 @@ namespace ASCOM.Utilities.Video
 				return FlipMode.None;
 		}
 
-	    public Bitmap GetDisplayBitmap()
+		public byte[] GetDisplayBitmapBytes()
         {
 			if (sensorType == SensorType.Monochrome)
 			{
@@ -207,17 +190,22 @@ namespace ASCOM.Utilities.Video
 			throw new InvalidOperationException();
 	    }
 
-	    public object GetImageArray(Bitmap bmp, SensorType sensorType, LumaConversionMode conversionMode)
+		public object GetImageArray(Bitmap bmp, SensorType sensorType, LumaConversionMode conversionMode, out byte[] bitmapBytes)
 		{
 			this.imageWidth = bmp.Width;
 			this.imageHeight = bmp.Height;
 
 			if (sensorType == SensorType.Monochrome)
-				return NativeHelpers.GetMonochromePixelsFromBitmap(bmp, conversionMode, GetFlipMode());
+				return NativeHelpers.GetMonochromePixelsFromBitmap(bmp, conversionMode, GetFlipMode(), out bitmapBytes);
 			else if (sensorType == SensorType.Color)
-				return NativeHelpers.GetColourPixelsFromBitmap(bmp, GetFlipMode());
+				return NativeHelpers.GetColourPixelsFromBitmap(bmp, GetFlipMode(), out bitmapBytes);
 			else
 				throw new NotSupportedException(string.Format("Sensor type {0} is not currently supported.", sensorType));
+		}
+
+		public byte[] GetBitmapBytes(Bitmap bmp)
+		{
+			return NativeHelpers.GetBitmapBytes(bmp);
 		}
     }
 }

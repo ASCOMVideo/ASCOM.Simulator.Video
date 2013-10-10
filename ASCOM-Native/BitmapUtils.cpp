@@ -18,14 +18,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-
-HRESULT GetBitmapPixels(long width, long height, long bpp, long flipMode, long* pixels, BYTE* bitmapPixels)
+void CopyBitmapHeaders(long width, long height, bool flipVertically, BYTE* bitmapPixels)
 {
-	BYTE* pp = bitmapPixels;
-
-	bool flipHorizontally = flipMode == 1 || flipMode == 3;
-	bool flipVertically = flipMode == 2 || flipMode == 3;
-
 	// define the bitmap information header 
 	BITMAPINFOHEADER bih;
 	bih.biSize = sizeof(BITMAPINFOHEADER); 
@@ -54,8 +48,14 @@ HRESULT GetBitmapPixels(long width, long height, long bpp, long flipMode, long* 
 	// Copy the display bitmap including the header
 	RtlMoveMemory(bitmapPixels, &bfh, sizeof(bfh));
 	RtlMoveMemory(bitmapPixels + sizeof(bfh), &memBitmapInfo, sizeof(memBitmapInfo));
+}
 
-	bitmapPixels = bitmapPixels + sizeof(bfh) + sizeof(memBitmapInfo);
+HRESULT GetBitmapPixels(long width, long height, long bpp, long flipMode, long* pixels, BYTE* bitmapPixels)
+{
+	bool flipHorizontally = flipMode == 1 || flipMode == 3;
+	bool flipVertically = flipMode == 2 || flipMode == 3;
+
+	CopyBitmapHeaders(width, height, flipVertically, bitmapPixels);
 
 	long x_sp = 3 * width;
 	long x_nrc = -6 * width;
@@ -70,7 +70,7 @@ HRESULT GetBitmapPixels(long width, long height, long bpp, long flipMode, long* 
 
 	long currLinePos = 0;
 	int length = width * height;
-	bitmapPixels+=3 * length + x_sp;
+	bitmapPixels+=54 + 3 * length + x_sp;
 
 	int shiftVal = bpp == 12 ? 4 : 8;
 
@@ -112,41 +112,11 @@ HRESULT GetBitmapPixels(long width, long height, long bpp, long flipMode, long* 
 
 HRESULT GetColourBitmapPixels(long width, long height, long bpp, long flipMode, long* pixels, BYTE* bitmapPixels)
 {
-	BYTE* pp = bitmapPixels;
-
 	bool flipHorizontally = flipMode == 1 || flipMode == 3;
 	bool flipVertically = flipMode == 2 || flipMode == 3;
 
-	// define the bitmap information header 
-	BITMAPINFOHEADER bih;
-	bih.biSize = sizeof(BITMAPINFOHEADER); 
-	bih.biPlanes = 1; 
-	bih.biBitCount = 24;                          // 24-bit 
-	bih.biCompression = BI_RGB;                   // no compression 
-	bih.biSizeImage = width * abs(height) * 3;    // width * height * (RGB bytes) 
-	bih.biXPelsPerMeter = 0; 
-	bih.biYPelsPerMeter = 0; 
-	bih.biClrUsed = 0; 
-	bih.biClrImportant = 0; 
-	bih.biWidth = width;                          // bitmap width 
-	bih.biHeight = flipVertically ? -height : height; // bitmap height 
-
-	// and BitmapInfo variable-length UDT
-	BYTE memBitmapInfo[40];
-	RtlMoveMemory(memBitmapInfo, &bih, sizeof(bih));
-
-	BITMAPFILEHEADER bfh;
-	bfh.bfType=19778;    //BM header
-	bfh.bfSize=55 + bih.biSizeImage;
-	bfh.bfReserved1=0;
-	bfh.bfReserved2=0;
-	bfh.bfOffBits=sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER); //54
-
-	// Copy the display bitmap including the header
-	RtlMoveMemory(bitmapPixels, &bfh, sizeof(bfh));
-	RtlMoveMemory(bitmapPixels + sizeof(bfh), &memBitmapInfo, sizeof(memBitmapInfo));
-
-	bitmapPixels = bitmapPixels + sizeof(bfh) + sizeof(memBitmapInfo);
+	CopyBitmapHeaders(width, height, flipVertically, bitmapPixels);
+	bitmapPixels+= 54;
 
 	long x_sp = 3 * width;
 	long x_nrc = -6 * width;
@@ -224,14 +194,17 @@ HRESULT GetRGGBBayerBitmapPixels(long width, long height, long bpp, long* pixels
 	return E_NOTIMPL;
 }
 
-HRESULT GetMonochromePixelsFromBitmap(long width, long height, long bpp, long flipMode, HBITMAP* bitmap, long* pixels, int mode)
+HRESULT GetMonochromePixelsFromBitmap(long width, long height, long bpp, long flipMode, HBITMAP* bitmap, long* pixels, BYTE* bitmapPixels, int mode)
 {
 	BITMAP bmp;
 	GetObject(bitmap, sizeof(bmp), &bmp);
 
 	unsigned char* buf = reinterpret_cast<unsigned char*>(bmp.bmBits);
 
+	CopyBitmapHeaders(width, height, false, bitmapPixels);
+	
 	unsigned char* ptrBuf = buf + ((width * height) - 1) * 4;
+	bitmapPixels += 54 + ((width * height) - 1) * 3;
 
 	for (int y=0; y < height; y++)
     {
@@ -252,22 +225,31 @@ HRESULT GetMonochromePixelsFromBitmap(long width, long height, long bpp, long fl
 				pixVal = (long)luma;
 			}
 
+			BYTE* currBitmapPixel;
 			if (flipMode == 0)
 			{
-				*(pixels + (width - 1 - x) + width * y ) = pixVal;
+				*(pixels + (width - 1 - x) + width * y) = pixVal;
+				currBitmapPixel = bitmapPixels - 3 * (x + width * y);
 			}
 			else if (flipMode == 1) /* Flip Horizontally */
 			{
-				*(pixels + x + width * y ) = pixVal;
+				*(pixels + x + width * y) = pixVal;
+				currBitmapPixel = bitmapPixels - 3 * ((width - 1 - x) + width * y);
 			}
 			else if (flipMode == 2) /* Flip Vertically */
 			{
-				*(pixels + (width - 1 - x) + width * (height - 1 - y) ) = pixVal;
+				*(pixels + (width - 1 - x) + width * (height - 1 - y)) = pixVal;
+				currBitmapPixel = bitmapPixels - 3 * (x +  width * (height - 1 - y));
 			}
 			else if (flipMode == 3) /* Flip Horizontally & Vertically */
 			{
-				*(pixels + x + width * (height - 1 - y) ) = pixVal;
+				*(pixels + x + width * (height - 1 - y)) = pixVal;
+				currBitmapPixel = bitmapPixels - 3 * ((width - 1 - x) + width * (height - 1 - y));
 			}
+
+			*(currBitmapPixel) = pixVal;
+			*(currBitmapPixel + 1) = pixVal;
+			*(currBitmapPixel + 2) = pixVal;
 
 			ptrBuf-=4;
 		}
@@ -276,7 +258,7 @@ HRESULT GetMonochromePixelsFromBitmap(long width, long height, long bpp, long fl
 	return S_OK;
 }
 
-HRESULT GetColourPixelsFromBitmap(long width, long height, long bpp, long flipMode, HBITMAP* bitmap, long* pixels)
+HRESULT GetColourPixelsFromBitmap(long width, long height, long bpp, long flipMode, HBITMAP* bitmap, long* pixels, BYTE* bitmapPixels)
 {
 	BITMAP bmp;
 	GetObject(bitmap, sizeof(bmp), &bmp);
@@ -284,20 +266,27 @@ HRESULT GetColourPixelsFromBitmap(long width, long height, long bpp, long flipMo
 	long* ptrPixelsR = pixels;
 	long* ptrPixelsG = pixels + (width * height);
 	long* ptrPixelsB = pixels + 2 * (width * height);
-
 	unsigned char* buf = reinterpret_cast<unsigned char*>(bmp.bmBits);
 
+	CopyBitmapHeaders(width, height, false, bitmapPixels);
+
 	unsigned char* ptrBuf = buf + ((width * height) - 1) * 4;
+
+	bitmapPixels += 54 + ((width * height) - 1) * 3;
 
 	for (int y=0; y < height; y++)
     {
 		for (int x=0; x < width; x++)
 		{
+			BYTE* currBitmapPixel;
+
 			if (flipMode == 0)
 			{
 				*(ptrPixelsR + (width - 1 - x) + width * y ) = *(ptrBuf + 2);
 				*(ptrPixelsG + (width - 1 - x) + width * y ) = *(ptrBuf + 1);
 				*(ptrPixelsB + (width - 1 - x) + width * y ) = *(ptrBuf);
+
+				currBitmapPixel = bitmapPixels - 3 * (x + width * y);
 			}
 			else if (flipMode == 1) /* Flip Horizontally */
 			{
@@ -305,19 +294,29 @@ HRESULT GetColourPixelsFromBitmap(long width, long height, long bpp, long flipMo
 				*(ptrPixelsR + x + width * y ) = *(ptrBuf + 2);
 				*(ptrPixelsG + x + width * y ) = *(ptrBuf + 1);
 				*(ptrPixelsB + x + width * y ) = *(ptrBuf);
+
+				currBitmapPixel = bitmapPixels - 3 * ((width - 1 - x) + width * y);
 			}
 			else if (flipMode == 2) /* Flip Vertically */
 			{
 				*(ptrPixelsR + (width - 1 - x) + width * (height - 1 - y) ) = *(ptrBuf + 2);
 				*(ptrPixelsG + (width - 1 - x) + width * (height - 1 - y) ) = *(ptrBuf + 1);
 				*(ptrPixelsB + (width - 1 - x) + width * (height - 1 - y) ) = *(ptrBuf);
+
+				currBitmapPixel = bitmapPixels - 3 * (x +  width * (height - 1 - y));
 			}
 			else if (flipMode == 3) /* Flip Horizontally & Vertically */
 			{
 				*(ptrPixelsR + x + width * (height - 1 - y) ) = *(ptrBuf + 2);
 				*(ptrPixelsG + x + width * (height - 1 - y) ) = *(ptrBuf + 1);
 				*(ptrPixelsB + x + width * (height - 1 - y) ) = *(ptrBuf);
+
+				currBitmapPixel = bitmapPixels - 3 * ((width - 1 - x) + width * (height - 1 - y));
 			}
+
+			*(currBitmapPixel) = *(ptrBuf);
+			*(currBitmapPixel + 1) = *(ptrBuf + 1);
+			*(currBitmapPixel + 2) = *(ptrBuf + 2);
 
 			ptrBuf-=4;
 		}
@@ -325,6 +324,34 @@ HRESULT GetColourPixelsFromBitmap(long width, long height, long bpp, long flipMo
 
 	return S_OK;
 
+}
+
+HRESULT GetBitmapBytes(long width, long height, HBITMAP* bitmap, BYTE* bitmapPixels)
+{
+	BITMAP bmp;
+	GetObject(bitmap, sizeof(bmp), &bmp);
+
+	unsigned char* buf = reinterpret_cast<unsigned char*>(bmp.bmBits);
+
+	CopyBitmapHeaders(width, height, false, bitmapPixels);
+	memcpy(bitmapPixels + 53, buf, width * height * 3);
+
+	unsigned char* ptrBuf = buf + ((width * height) - 1) * 4;
+	bitmapPixels += 54 + ((width * height) - 1) * 3;
+
+	for (int y=0; y < height; y++)
+    {
+		for (int x=0; x < width; x++)
+		{
+			*(bitmapPixels) = *(ptrBuf);
+			*(bitmapPixels + 1) = *(ptrBuf + 1);
+			*(bitmapPixels + 2) = *(ptrBuf + 2);
+
+			bitmapPixels-=3;
+			ptrBuf-=4;
+		}
+	}
+	return S_OK;
 }
 
 HRESULT GetRGGBBayerPixelsFromBitmap(long width, long height, long bpp, HBITMAP* bitmap, long* pixels)

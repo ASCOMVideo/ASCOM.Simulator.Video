@@ -29,7 +29,7 @@ namespace ASCOM.DeviceInterface.DirectShowVideo.VideoCaptureImpl
 	{
 		public object Pixels;
 		public long FrameNumber;
-		public Bitmap PreviewBitmap;
+		public byte[] PreviewBitmapBytes;
 
 		public VideoFrameLayout ImageLayout;
 	}
