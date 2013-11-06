@@ -25,9 +25,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using ASCOM.DeviceInterface;
-using ASCOM.DeviceInterface.Utilities.Video;
 using ASCOM.Simulator.Properties;
 using ASCOM.Simulator.Utils;
+using ASCOM.Utilities.Video;
 using Microsoft.Win32;
 using Simulator.VideoCameraImpl;
 
@@ -36,8 +36,8 @@ namespace ASCOM.Simulator
 	[ComVisible(true)]
 	[ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(IVideo))]
-	[Guid("1D06B419-B330-42CA-BC41-992718C929F4")]
-	[ProgId("ASCOM.Simulator.Video")]
+	[Guid("538B5149-EDC3-4470-97F8-E4508B95A911")]
+	[ProgId("ASCOM.Simulator.PreliminaryVideo")]
 	public class Video : IVideo
 	{
 		/// <summary>
@@ -49,12 +49,12 @@ namespace ASCOM.Simulator
 		/// ASCOM DeviceID (COM ProgID) for this driver.
 		/// The DeviceID is used by ASCOM applications to load the driver at runtime.
 		/// </summary>
-		private static string DRIVER_ID = "ASCOM.Simulator.Video";
+		private static string DRIVER_ID = "ASCOM.Simulator.PreliminaryVideo";
 
 		/// <summary>
 		/// Driver description that displays in the ASCOM Chooser.
 		/// </summary>
-		private static string DRIVER_DESCRIPTION = "Video Simulator";
+		private static string DRIVER_DESCRIPTION = "Video Simulator (Preliminary)";
 
 		#region ASCOM Registration
 		//
@@ -130,12 +130,15 @@ namespace ASCOM.Simulator
 		#endregion
 
 		private VideoCamera camera;
+		private AviTools aviTools;
 
 		public Video()
 		{
 			Properties.Settings.Default.Reload();
 
-			camera = new VideoCamera();
+			aviTools = new AviTools();
+
+			camera = new VideoCamera(aviTools);
 		}
 
 		/// <exception cref="T:ASCOM.DriverException">Must throw an exception if the call was not successful</exception>
@@ -516,7 +519,7 @@ namespace ASCOM.Simulator
 		{
 			get
 			{
-                return AviTools.GetUsedAviFourCC();
+				return aviTools.GetUsedAviFourCC();
 			}
 		}
 
@@ -722,7 +725,7 @@ namespace ASCOM.Simulator
 		///	active <see cref="P:ASCOM.DeviceInterface.IVideo.Connected">connection</see> in order to retrieve necessary information from the camera.)</exception>
 		///	<exception cref="T:ASCOM.InvalidValueException">Must throw an exception if not valid.</exception>
 		///	<exception cref="T:ASCOM.PropertyNotImplementedException">Must throw an exception if gamma is not supported</exception>
-		public int Gamma
+		public short Gamma
 		{
 			get
 			{

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ASCOM Video Capture Client")]
+[assembly: AssemblyTitle("ASCOM Video Reference Client")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Hristo Pavlov")]
-[assembly: AssemblyProduct("ASCOM Video Capture Client")]
+[assembly: AssemblyProduct("ASCOM Video Reference Client")]
 [assembly: AssemblyCopyright("Copyright © 2012-2013 Hristo Pavlov")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

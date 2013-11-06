@@ -11,6 +11,7 @@
 //
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -344,9 +345,9 @@ namespace Client
 				get { return null; }
 			}
 
-			public string ImageInfo
+			public ArrayList ImageMetadata
 			{
-				get { return null; }
+				get { return new ArrayList(); }
 			}
 		}
 
@@ -372,7 +373,7 @@ namespace Client
 
 							if (Settings.Default.UsePreviewBitmap)
 							{
-								using (MemoryStream memStr = new MemoryStream(frame.PreviewBitmap))
+								using (var memStr = new MemoryStream(frame.PreviewBitmap))
 								{
 									bmp = (Bitmap)Image.FromStream(memStr);	
 								}
@@ -491,10 +492,6 @@ namespace Client
 			{
 				switch(videoObject.State)
 				{
-					case VideoCameraState.videoCameraIdle:
-						tssCameraState.Text = "Idle";
-						break;
-
 					case VideoCameraState.videoCameraRunning:
 						tssCameraState.Text = "Running";
 						break;

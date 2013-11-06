@@ -20,9 +20,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ASCOM;
 using ASCOM.DeviceInterface;
-using ASCOM.DeviceInterface.Utilities.Video;
 using ASCOM.Simulator.Properties;
 using ASCOM.Simulator.Utils;
+using ASCOM.Utilities.Video;
 
 namespace Simulator.VideoCameraImpl
 {
@@ -66,9 +66,12 @@ namespace Simulator.VideoCameraImpl
 		private int bufferSize;
 
 		private int[,] alteredPixels;
+		private AviTools aviTools;
 
-		public VideoCamera()
+		public VideoCamera(AviTools aviTools)
 		{
+			this.aviTools = aviTools;
+
 			ReloadSimulatorSettings();
 
 			isConnected = false;
@@ -83,6 +86,7 @@ namespace Simulator.VideoCameraImpl
 		{
 			if (bitmapPlayer == null)
 				bitmapPlayer = new BitmapVideoPlayer(
+					aviTools,
 					Settings.Default.UseEmbeddedVideoSource, 
 					Settings.Default.SourceBitmapFilesLocation, 
 					useBuffering ? bufferSize : 0);
@@ -248,10 +252,10 @@ namespace Simulator.VideoCameraImpl
 			selectedDiscreteGammaIndex = newGammaIndex;
 
 			double gammaVal = GetCurrentGammaValue();
-            AviTools.SetNewGamma(gammaVal);
+			aviTools.SetNewGamma(gammaVal);
 		}
 
-		public int GetCurrentGamma()
+		public short GetCurrentGamma()
 		{
 			if (selectedDiscreteGammaIndex == -1)
 				return freeRangeGammaValue;
@@ -266,7 +270,7 @@ namespace Simulator.VideoCameraImpl
 			{
 				freeRangeGammaValue = short.MinValue;
 				double gammaVal = GetCurrentGammaValue();
-				AviTools.SetNewGamma(gammaVal);
+				aviTools.SetNewGamma(gammaVal);
 			}
 		}
 
@@ -491,7 +495,7 @@ namespace Simulator.VideoCameraImpl
 			{
 				selectedWhiteBalance = newWhiteBalance;
 
-                AviTools.SetNewWhiteBalance(selectedWhiteBalance);
+				aviTools.SetNewWhiteBalance(selectedWhiteBalance);
 			}
 		}
 
@@ -515,7 +519,7 @@ namespace Simulator.VideoCameraImpl
 				{
 					short brightness = (short)Math.Round(150 * ((double)currentGain / GetMaxGain()));
 
-                    AviTools.ApplyGammaBrightness(currentFrame, alteredPixels, bitmapPlayer.Width, bitmapPlayer.Height, brightness);
+					aviTools.ApplyGammaBrightness(currentFrame, alteredPixels, bitmapPlayer.Width, bitmapPlayer.Height, brightness);
 
 					cameraFrame = new VideoCameraFrame()
 					{

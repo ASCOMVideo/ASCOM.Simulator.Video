@@ -55,8 +55,6 @@ namespace Client
 				video.Connected = false;
 				video = null;
 
-				cameraXSize = null;
-				cameraYSize = null;
 				supportsGamma = null;
 				supporstFreeStyleGain = null;
 				supporstDiscreteGain = null;
@@ -84,41 +82,6 @@ namespace Client
 		{
 			get { return video.Connected; }
 			set { video.Connected = true; }
-		}
-
-		public int? cameraXSize;
-		public int CameraXSize
-		{
-			get
-			{
-				if (cameraXSize == null)
-				{
-					cameraXSize = 
-						ShieldedCall(
-							() => video.CameraXSize,
-							0);
-					
-				}
-
-				return cameraXSize.Value;
-			}
-		}
-
-		public int? cameraYSize;
-		public int CameraYSize
-		{
-			get
-			{
-				if (cameraYSize == null)
-				{
-					return
-						ShieldedCall(
-							() => video.CameraYSize,
-							0);
-				}
-
-				return cameraYSize.Value;
-			}
 		}
 
 		public bool CanConfigureDeviceProperties
@@ -611,8 +574,8 @@ namespace Client
 			}
 		}
 
-		private int? pixelSizeX = null;
-		private int PixelSizeX
+		private double? pixelSizeX = null;
+		private double PixelSizeX
 		{
 			get
 			{
@@ -620,7 +583,7 @@ namespace Client
 				{
 					try
 					{
-						pixelSizeX = video.CameraXSize;	
+						pixelSizeX = video.PixelSizeX;	
 					}
 					catch (PropertyNotImplementedException)
 					{
@@ -632,8 +595,8 @@ namespace Client
 			}
 		}
 
-		private int? pixelSizeY = null;
-		private int PixelSizeY
+		private double? pixelSizeY = null;
+		private double PixelSizeY
 		{
 			get
 			{
@@ -641,7 +604,7 @@ namespace Client
 				{
 					try
 					{
-						pixelSizeY = video.CameraYSize;
+						pixelSizeY = video.PixelSizeY;
 					}
 					catch (PropertyNotImplementedException)
 					{
