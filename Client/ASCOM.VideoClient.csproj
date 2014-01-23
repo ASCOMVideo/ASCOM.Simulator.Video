@@ -162,8 +162,10 @@
     <Compile Include="frmUnexpectedError.Designer.cs">
       <DependentUpon>frmUnexpectedError.cs</DependentUpon>
     </Compile>
+    <Compile Include="IVideoWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreadIsolatedVideoWrapper.cs" />
     <Compile Include="VideoWrapper.cs" />
     <EmbeddedResource Include="frmCameraInfo.resx">
       <DependentUpon>frmCameraInfo.cs</DependentUpon>

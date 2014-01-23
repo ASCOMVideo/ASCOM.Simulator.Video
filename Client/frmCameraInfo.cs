@@ -11,14 +11,14 @@ namespace Client
 {
 	public partial class frmCameraInfo : Form
 	{
-		private VideoWrapper videoObject;
+		private IVideoWrapper videoObject;
 
 		public frmCameraInfo()
 		{
 			InitializeComponent();
 		}
 
-		internal void SetVideoObject(VideoWrapper wrapper)
+		internal void SetVideoObject(IVideoWrapper wrapper)
 		{
 			videoObject = wrapper;
 		}

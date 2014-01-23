@@ -16,17 +16,29 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using ASCOM;
 using ASCOM.DeviceInterface;
+using Client.Properties;
 
 namespace Client
 {
-	internal class VideoWrapper
+	internal class VideoWrapper : IVideoWrapper
 	{
 		private IVideo video;
 		private short[] gainSlots;
 
-		public VideoWrapper(IVideo video)
+		public static IVideoWrapper CreateVideoWrapper(IVideo video)
+		{
+			IVideoWrapper directWrapper = new VideoWrapper(video);
+
+			if (Settings.Default.ThreadIsolation)
+				return new ThreadIsolatedVideoWrapper(directWrapper);
+			else
+				return directWrapper;
+		}
+
+		private VideoWrapper(IVideo video)
 		{
 			this.video = video;
 		}
@@ -99,6 +111,16 @@ namespace Client
 
 		public void ConfigureDeviceProperties()
 		{
+			if (Settings.Default.ThreadIsolation)
+			{
+				ThreadPool.QueueUserWorkItem(ConfigureDevicePropertiesInternal);
+			}
+			else
+				ConfigureDevicePropertiesInternal(null);
+		}
+
+		private void ConfigureDevicePropertiesInternal(object state)
+		{
 			if (video != null)
 			{
 				ShieldedCall(
@@ -111,6 +133,29 @@ namespace Client
 			}
 		}
 
+		public void SetupDialog()
+		{
+			if (Settings.Default.ThreadIsolation)
+			{
+				ThreadPool.QueueUserWorkItem(SetupDialogInternal);
+			}
+			else
+				SetupDialogInternal(null);
+		}
+
+		private void SetupDialogInternal(object state)
+		{
+			if (video != null)
+			{
+				ShieldedCall(
+					delegate()
+					{
+						video.SetupDialog();
+						return true;
+					},
+					false);
+			}
+		}
 		public VideoCameraState State
 		{
 			get
@@ -484,9 +529,8 @@ namespace Client
 				if (video != null)
 				{
 					return
-						ShieldedCall(
-							() => video.LastVideoFrame,
-							null);
+						ShieldedCall<IVideoFrame, ASCOM.InvalidOperationException>(
+							() => video.LastVideoFrame, null, false);
 				}
 				else
 					return null;
@@ -862,7 +906,28 @@ namespace Client
 			}
 		}
 
-		internal string StartRecording(string fileName)
+		private T ShieldedCall<T, TException>(Func<T> method, T errorValue, bool showError) where TException : Exception 
+		{
+			try
+			{
+				return method();
+			}
+			catch (TException tex)
+			{
+				if (showError)
+					frmUnexpectedError.ShowErrorMessage(tex);
+
+				return errorValue;
+			}
+			catch (ASCOM.DriverException dex)
+			{
+				frmUnexpectedError.ShowErrorMessage(dex);
+
+				return errorValue;
+			}
+		}
+
+		public string StartRecording(string fileName)
 		{
 			if (video != null)
 			{
@@ -872,7 +937,7 @@ namespace Client
 			return null;
 		}
 
-		internal void StopRecording()
+		public void StopRecording()
 		{
 			if (video != null)
 			{

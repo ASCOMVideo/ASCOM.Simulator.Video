@@ -61,6 +61,7 @@
 			this.btnStopRecording = new System.Windows.Forms.Button();
 			this.btnRecord = new System.Windows.Forms.Button();
 			this.cbFrameFetcher = new System.Windows.Forms.CheckBox();
+			this.miVideoSetup = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip.SuspendLayout();
 			this.msMain.SuspendLayout();
 			this.pnlClient.SuspendLayout();
@@ -131,6 +132,7 @@
 			this.msMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.miActions,
+            this.miVideoSetup,
             this.miSettings});
 			this.msMain.Location = new System.Drawing.Point(0, 0);
 			this.msMain.Name = "msMain";
@@ -155,7 +157,7 @@
 			// miConnect
 			// 
 			this.miConnect.Name = "miConnect";
-			this.miConnect.Size = new System.Drawing.Size(134, 22);
+			this.miConnect.Size = new System.Drawing.Size(152, 22);
 			this.miConnect.Text = "&Connect";
 			this.miConnect.Click += new System.EventHandler(this.miConnect_Click);
 			// 
@@ -163,20 +165,20 @@
 			// 
 			this.miDisconnect.Enabled = false;
 			this.miDisconnect.Name = "miDisconnect";
-			this.miDisconnect.Size = new System.Drawing.Size(134, 22);
+			this.miDisconnect.Size = new System.Drawing.Size(152, 22);
 			this.miDisconnect.Text = "&Disconnect";
 			this.miDisconnect.Click += new System.EventHandler(this.miDisconnect_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// miCameraInfo
 			// 
 			this.miCameraInfo.Enabled = false;
 			this.miCameraInfo.Name = "miCameraInfo";
-			this.miCameraInfo.Size = new System.Drawing.Size(134, 22);
+			this.miCameraInfo.Size = new System.Drawing.Size(152, 22);
 			this.miCameraInfo.Text = "Ca&mera Info";
 			this.miCameraInfo.Click += new System.EventHandler(this.miCameraInfo_Click);
 			// 
@@ -184,19 +186,19 @@
 			// 
 			this.miDriverInfo.Enabled = false;
 			this.miDriverInfo.Name = "miDriverInfo";
-			this.miDriverInfo.Size = new System.Drawing.Size(134, 22);
+			this.miDriverInfo.Size = new System.Drawing.Size(152, 22);
 			this.miDriverInfo.Text = "Dri&ver Info";
 			this.miDriverInfo.Click += new System.EventHandler(this.miDriverInfo_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -527,6 +529,14 @@
 			this.cbFrameFetcher.UseVisualStyleBackColor = true;
 			this.cbFrameFetcher.CheckedChanged += new System.EventHandler(this.cbFrameFetcher_CheckedChanged);
 			// 
+			// miVideoSetup
+			// 
+			this.miVideoSetup.Enabled = false;
+			this.miVideoSetup.Name = "miVideoSetup";
+			this.miVideoSetup.Size = new System.Drawing.Size(76, 20);
+			this.miVideoSetup.Text = "Video Setup";
+			this.miVideoSetup.Click += new System.EventHandler(this.miVideoSetup_Click);
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -608,6 +618,7 @@
 		private System.Windows.Forms.Panel pnlVideoFrames;
 		private System.Windows.Forms.ToolStripStatusLabel tssRecordingFile;
         private System.Windows.Forms.Button btnImageSettings;
+		private System.Windows.Forms.ToolStripMenuItem miVideoSetup;
 
 	}
 }

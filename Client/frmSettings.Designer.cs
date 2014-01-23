@@ -41,9 +41,12 @@
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.nudGainIntervals = new System.Windows.Forms.NumericUpDown();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.cbxIsolation = new System.Windows.Forms.ComboBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudGainIntervals)).BeginInit();
 			this.groupBox2.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -93,7 +96,7 @@
 			// btnCancel
 			// 
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(318, 189);
+			this.btnCancel.Location = new System.Drawing.Point(318, 201);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -102,7 +105,7 @@
 			// 
 			// btnOK
 			// 
-			this.btnOK.Location = new System.Drawing.Point(237, 189);
+			this.btnOK.Location = new System.Drawing.Point(237, 201);
 			this.btnOK.Name = "btnOK";
 			this.btnOK.Size = new System.Drawing.Size(75, 23);
 			this.btnOK.TabIndex = 2;
@@ -112,7 +115,7 @@
 			// 
 			// tbxOutputLocation
 			// 
-			this.tbxOutputLocation.Location = new System.Drawing.Point(12, 154);
+			this.tbxOutputLocation.Location = new System.Drawing.Point(12, 166);
 			this.tbxOutputLocation.Name = "tbxOutputLocation";
 			this.tbxOutputLocation.Size = new System.Drawing.Size(345, 20);
 			this.tbxOutputLocation.TabIndex = 3;
@@ -120,7 +123,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 135);
+			this.label1.Location = new System.Drawing.Point(12, 147);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(113, 13);
 			this.label1.TabIndex = 4;
@@ -128,7 +131,7 @@
 			// 
 			// btnBrowseOutputFolder
 			// 
-			this.btnBrowseOutputFolder.Location = new System.Drawing.Point(363, 151);
+			this.btnBrowseOutputFolder.Location = new System.Drawing.Point(363, 163);
 			this.btnBrowseOutputFolder.Name = "btnBrowseOutputFolder";
 			this.btnBrowseOutputFolder.Size = new System.Drawing.Size(30, 23);
 			this.btnBrowseOutputFolder.TabIndex = 5;
@@ -153,16 +156,39 @@
 			this.groupBox2.Controls.Add(this.nudGainIntervals);
 			this.groupBox2.Location = new System.Drawing.Point(15, 81);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(378, 51);
+			this.groupBox2.Size = new System.Drawing.Size(162, 51);
 			this.groupBox2.TabIndex = 8;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Free range gain intervals";
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.cbxIsolation);
+			this.groupBox3.Location = new System.Drawing.Point(184, 81);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(209, 51);
+			this.groupBox3.TabIndex = 9;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Video Client Isolation";
+			// 
+			// cbxIsolation
+			// 
+			this.cbxIsolation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbxIsolation.FormattingEnabled = true;
+			this.cbxIsolation.Items.AddRange(new object[] {
+            "None",
+            "Thread"});
+			this.cbxIsolation.Location = new System.Drawing.Point(7, 21);
+			this.cbxIsolation.Name = "cbxIsolation";
+			this.cbxIsolation.Size = new System.Drawing.Size(146, 21);
+			this.cbxIsolation.TabIndex = 0;
 			// 
 			// frmSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(408, 223);
+			this.ClientSize = new System.Drawing.Size(408, 233);
+			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.btnBrowseOutputFolder);
 			this.Controls.Add(this.label1);
@@ -181,6 +207,7 @@
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudGainIntervals)).EndInit();
 			this.groupBox2.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -200,5 +227,7 @@
 		private System.Windows.Forms.NumericUpDown nudGainIntervals;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.RadioButton rbPreviewBitmap;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.ComboBox cbxIsolation;
 	}
 }

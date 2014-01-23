@@ -35,9 +35,9 @@ namespace Client
 	public partial class frmMain : Form
 	{
 		private static string VIDEO_DEVICE_TYPE = "Video";
-		private static string VIDEO_DRIVER_NAME = "ASCOM.DirectShow.Video";
+		private static string VIDEO_DRIVER_NAME = "Tangra.DirectShow.Video";
 
-		private VideoWrapper videoObject;
+		private IVideoWrapper videoObject;
 		private bool running = false;
 
 		private int imageWidth;
@@ -83,7 +83,7 @@ namespace Client
 
 			if (!string.IsNullOrEmpty(progId))
 			{
-				videoObject = new VideoWrapper(new Video(progId));
+				videoObject = VideoWrapper.CreateVideoWrapper(new Video(progId));
 				
 				try
 				{
@@ -156,6 +156,8 @@ namespace Client
 				connected && 
 				videoObject != null &&
 				videoObject.HasSupportedActions;
+
+			miVideoSetup.Enabled = connected && videoObject != null;
 
 			UpdateState();
 
@@ -638,6 +640,12 @@ namespace Client
 		{
 			if (videoObject != null)
 				videoObject.ConfigureDeviceProperties();
+		}
+
+		private void miVideoSetup_Click(object sender, EventArgs e)
+		{
+			if (videoObject != null)
+				videoObject.SetupDialog();
 		}
 	}
 }

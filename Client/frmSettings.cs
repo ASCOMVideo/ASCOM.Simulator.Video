@@ -43,6 +43,12 @@ namespace Client
 			nudGainIntervals.Value = Settings.Default.FreeRangeGainIntervals;
 
 			tbxOutputLocation.Text = Settings.Default.OutputLocation;
+
+			if (Settings.Default.ThreadIsolation)
+				cbxIsolation.SelectedIndex = 1;
+			else
+				cbxIsolation.SelectedIndex = 0;
+
 		}
 
 		private void btnOK_Click(object sender, EventArgs e)
@@ -64,6 +70,7 @@ namespace Client
 			Settings.Default.UseNativeCode = rbNative.Checked;
 			Settings.Default.UsePreviewBitmap = rbPreviewBitmap.Checked;
 			Settings.Default.OutputLocation = tbxOutputLocation.Text;
+			Settings.Default.ThreadIsolation = cbxIsolation.SelectedIndex == 1;
 
 			Settings.Default.Save();
 
