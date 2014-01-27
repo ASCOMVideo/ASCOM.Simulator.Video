@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading;
 using ASCOM;
 using ASCOM.DeviceInterface;
+using ASCOM.DriverAccess;
 using Client.Properties;
 
 namespace Client
@@ -28,17 +29,15 @@ namespace Client
 		private IVideo video;
 		private short[] gainSlots;
 
-		public static IVideoWrapper CreateVideoWrapper(IVideo video)
+		public static IVideoWrapper CreateVideoWrapper(string progId)
 		{
-			IVideoWrapper directWrapper = new VideoWrapper(video);
-
 			if (Settings.Default.ThreadIsolation)
-				return new ThreadIsolatedVideoWrapper(directWrapper);
+				return new ThreadIsolatedVideoWrapper(progId);
 			else
-				return directWrapper;
+				return new VideoWrapper(new Video(progId));
 		}
 
-		private VideoWrapper(IVideo video)
+		internal VideoWrapper(IVideo video)
 		{
 			this.video = video;
 		}

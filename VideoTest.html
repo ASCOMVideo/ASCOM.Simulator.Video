@@ -1,0 +1,15 @@
+<html>
+<head>
+  <script>
+     function TestVideo()
+	 { 
+	    var video = new ActiveXObject("TACOS.DirectShow.Video"); 
+		video.Connected = true;
+		video.ConfigureDeviceProperties();
+	 }
+  </script>
+</head>
+<body>
+	<button onclick="JavaScript:TestVideo();">Test</button>
+</body>
+</html>

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using ASCOM.DeviceInterface;
+using ASCOM.DriverAccess;
 
 namespace Client
 {
@@ -37,12 +39,6 @@ namespace Client
 				}
 			}
 		}
-
-		public ThreadIsolatedVideoWrapper(IVideoWrapper delegateWrapper)
-		{
-			m_delegate = delegateWrapper;
-		}
-
 
 		private static void WorkerThread(object state)
 		{
@@ -153,6 +149,12 @@ namespace Client
 			SpinWait.SpinUntil(() => item.InvocationCompleted);
 		}
 		#endregion
+
+
+		public ThreadIsolatedVideoWrapper(string progId)
+		{
+			IsolatedAction(() => m_delegate = new VideoWrapper(new Video(progId)));
+		}
 
 
 		public bool Connected

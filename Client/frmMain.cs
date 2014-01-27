@@ -83,7 +83,7 @@ namespace Client
 
 			if (!string.IsNullOrEmpty(progId))
 			{
-				videoObject = VideoWrapper.CreateVideoWrapper(new Video(progId));
+				videoObject = VideoWrapper.CreateVideoWrapper(progId);
 				
 				try
 				{
