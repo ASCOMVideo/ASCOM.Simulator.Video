@@ -41,6 +41,7 @@ Global
 		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Documentation|x86.ActiveCfg = Release|x86
 		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Documentation|x86.Build.0 = Release|x86
 		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Release|Any CPU.ActiveCfg = Release|x86
+		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Release|Any CPU.Build.0 = Release|x86
 		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Release|Mixed Platforms.Build.0 = Release|x86
 		{AFF3793B-180A-468C-8667-48EDEABCDF08}.Release|Win32.ActiveCfg = Release|x86

@@ -1,5 +1,5 @@
-Set objVideo = CreateObject("Tangra.DirectShow.Video")
-'Set objVideo = CreateObject("ASCOM.Simulator.Video")
+'Set objVideo = CreateObject("Tangra.DirectShow.Video")
+Set objVideo = CreateObject("ASCOM.Simulator.Video")
 
 Wscript.Echo("Created driver OK")
 objVideo.Connected = True
